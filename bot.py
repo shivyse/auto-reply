@@ -84,10 +84,11 @@ def main():
 
     if WEBHOOK_URL:
         app.run_webhook(
-            listen="0.0.0.0",
-            port=PORT,
-            webhook_url=WEBHOOK_URL,
-        )
+    listen="0.0.0.0",
+    port=PORT,
+    url_path="",
+    webhook_url=WEBHOOK_URL,
+)
     else:
         app.run_polling()
 
