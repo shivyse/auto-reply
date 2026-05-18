@@ -82,7 +82,7 @@ def main():
     app.add_handler(CommandHandler("status", status))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, auto_reply))
 
-if WEBHOOK_URL:
+    if WEBHOOK_URL:
         app.run_webhook(
             listen="0.0.0.0",
             port=PORT,
@@ -91,6 +91,7 @@ if WEBHOOK_URL:
         )
     else:
         app.run_polling()
+
 
 if __name__ == "__main__":
     main()
