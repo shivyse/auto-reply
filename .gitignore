@@ -1,0 +1,18 @@
+# clipping automation: ephemeral media + local state
+clip_work/
+clips/
+*.ass
+*.transcript.json
+clip_watch_state.json
+clip_upload_*
+
+# credentials (never commit)
+youtube_token.json
+client_secrets.json
+.env
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
