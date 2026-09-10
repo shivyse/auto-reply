@@ -2,6 +2,7 @@ import asyncio
 import functools
 import logging
 import os
+from clipper import whop_bot
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -56,7 +57,11 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "   e.g. /clip https://youtu.be/xxxx 3\n"
         "Send a video file — clips it directly (max 50MB via Telegram,\n"
         "   larger files: send a link instead)\n\n"
-        "Each clip comes back as a 9:16 captioned mp4 with a title + hashtags."
+        "Each clip comes back as a 9:16 captioned mp4 with a title + hashtags.\n\n"
+        "💰 Whop clipping agent:\n"
+        "/whop discover — find suitable paid campaigns\n"
+        "/whop do <id> — produce compliant clips for a campaign\n"
+        "/whop — all subcommands"
     )
 
 
@@ -313,6 +318,9 @@ def main():
     app.add_handler(CommandHandler("setmessage", setmessage))
     app.add_handler(CommandHandler("status", status))
     app.add_handler(CommandHandler("clip", clip_command))
+    app.add_handler(CommandHandler("whop", functools.partial(
+        whop_bot.wh_command, allow=_clip_allowed, lock=CLIP_LOCK,
+        send_clips=_send_clips)))
     app.add_handler(MessageHandler(filters.VIDEO | filters.Document.ALL, clip_upload))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, auto_reply))
 

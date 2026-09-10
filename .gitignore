@@ -4,6 +4,7 @@ clips/
 *.ass
 *.transcript.json
 clip_watch_state.json
+whop_state.json
 clip_upload_*
 
 # credentials (never commit)

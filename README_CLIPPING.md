@@ -1,6 +1,7 @@
 # 🎬 Clipping Automation
 
-Turn long videos into viral vertical shorts — automatically.
+Turn long videos into viral vertical shorts — automatically. Plus a **Whop
+agent** that finds paid clipping campaigns and fulfills them for you.
 
 **Pipeline:** video URL or file → transcript → AI viral-moment detection →
 9:16 captioned mp4s with titles + hashtags → delivered to Telegram (and
@@ -110,6 +111,42 @@ python -m clipper.uploader_youtube --auth --secrets client_secrets.json
 - Disk: videos + clips accumulate — `clip_work/` and `clips/` are git-ignored
   ephemeral storage; add a cron/volume cleanup for 24/7 operation.
 
+## 💰 Whop agent (find campaigns → fulfill them)
+
+The bot doubles as a **Whop Content Rewards** clipping agent: it scans the
+marketplace for suitable paid campaigns, scores them by rate × remaining
+budget, and produces compliant ready-to-post clips for the ones you pick.
+
+```bash
+python -m clipper.whop discover          # top suitable live campaigns
+python -m clipper.whop show 1            # payouts, rules, reference links
+python -m clipper.whop add <url>         # track a campaign you joined
+python -m clipper.whop source <id> <youtube-url>   # footage to clip
+python -m clipper.whop rules <id> <text> # paste full rules from inside Whop
+python -m clipper.whop do <id> --count 3 # produce compliant clips + checklist
+python -m clipper.whop posted <clip-id> <post-url>  # track submissions
+```
+
+Same thing in Telegram via `/whop discover|show|add|source|rules|do|posted|list`.
+
+**How fulfillment works:** each campaign gets its footage clipped with the
+campaign's own constraints auto-applied (min/max length, required hashtags,
+mentions), clips land in `clips/whop_<id>/`, and you get a submission
+checklist (where to post, what tags, where to submit the link). Progress is
+tracked in `whop_state.json` (produced → posted → submitted).
+
+**Filters (env):** `WHOP_MIN_RATE` (default 0.5), `WHOP_MIN_BUDGET_LEFT`
+(1000), `WHOP_MAX_USED_PCT` (95), `WHOP_PLATFORMS` (e.g. `tiktok,youtube`),
+`WHOP_NICHE_INCLUDE` / `WHOP_NICHE_EXCLUDE` keywords. Tip: skip campaigns
+with nearly-dry budgets — late-verifying views can go unpaid.
+
+**Honest scope:** posting must happen from *your* social accounts and link
+submission happens inside Whop under your login, so those two steps stay
+manual (~2 min/clip). The agent automates everything else: discovery,
+economics, rules compliance, and clip production. Exception: if a campaign
+allows YouTube and you've done the one-time Shorts OAuth, set
+`WHOP_AUTO_UPLOAD=1` and fulfillment auto-publishes to your own channel.
+
 ## TikTok / Reels auto-posting?
 
 - **YouTube Shorts**: supported (see above).
@@ -129,6 +166,8 @@ clipper/
   captions.py      TikTok-style word-highlight ASS subtitles
   editor.py        ffmpeg: cut → 9:16 → burn captions → loudness normalize
   watcher.py       RSS channel monitor for fully-automatic mode
+  whop.py          Whop Content Rewards: discover, score, fulfill, track
+  whop_bot.py      Telegram /whop subcommands
   uploader_youtube.py  YouTube Shorts upload (+ --auth helper)
   config.py        env-driven settings
   assets/          bundled fonts (Anton auto-fetches on first render)
