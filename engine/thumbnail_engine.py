@@ -155,9 +155,18 @@ def generate_thumbnail(
     draw.polygon([(arr_end[0] - 15, arr_end[1] - 18), (arr_end[0] + 15, arr_end[1] + 10), (arr_end[0] - 5, arr_end[1] + 25)], fill=(239, 68, 68))
 
     # 5. Ultra-Short Punchline (2 to 3 words MAX, 100pt bold font)
-    # Determine the two punchy lines
+    # Check for Casually Finance signature parentheticals and topics
     words = topic.upper().split()
-    if any(k in topic.lower() for k in ["star note", "dollar", "15,000"]):
+    if "GREATEST" in topic.upper() or "HACK" in topic.upper():
+        line1 = "THE (GREATEST) HACK"
+        line2 = "THEY DON'T PAY TAX"
+    elif "DITCHING" in topic.upper() or "DOLLAR" in topic.upper():
+        line1 = "DITCHING THE DOLLAR?!"
+        line2 = "CENTRAL BANK LEAK"
+    elif "WTF" in topic.upper() or "STOCK MARKET" in topic.upper():
+        line1 = "WTF IS HAPPENING?!"
+        line2 = "WALL STREET GLITCH"
+    elif any(k in topic.lower() for k in ["star note", "dollar", "15,000"]):
         line1 = "THEY LIED?!"
         line2 = "$15,000 GLITCH"
     elif any(k in topic.lower() for k in ["rushmore", "secret", "room", "door"]):

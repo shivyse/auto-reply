@@ -454,6 +454,26 @@ function setupEventListeners() {
     });
   }
 
+  // @CasuallyFinance Preset Button
+  const btnCF = document.getElementById("btnCasuallyFinancePreset");
+  if (btnCF) {
+    const cfTopics = [
+      {topic: "The (Greatest) Financial Hack in History", badge: "WALL STREET HACK"},
+      {topic: "Why Everyone Is (Quietly) Ditching the US Dollar", badge: "DOLLAR CRISIS"},
+      {topic: "WTF Is (Actually) Happening In The Stock Market?!", badge: "MARKET GLITCH"},
+      {topic: "The (Dark) Reality of the TikTok Day Trader", badge: "DAY TRADING SCAM"}
+    ];
+    let cfIdx = 0;
+    btnCF.addEventListener("click", () => {
+      const selected = cfTopics[cfIdx % cfTopics.length];
+      cfIdx++;
+      document.getElementById("autoTopic").value = selected.topic;
+      document.getElementById("autoNiche").value = "finance";
+      document.getElementById("autoBadge").value = selected.badge;
+      showToast(`Loaded @CasuallyFinance Macro Style: "${selected.topic}"`, "success");
+    });
+  }
+
   // Refresh Intel button
   const btnRefreshIntel = document.getElementById("btnRefreshIntel");
   if (btnRefreshIntel) {

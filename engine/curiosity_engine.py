@@ -149,6 +149,84 @@ CURIOSITY_VAULT = [
             "exactly how the dopamine casino is built. Rule number one of the drug trade: never get high on your own supply. And the next time "
             "you find yourself doomscrolling at two in the morning, remember..."
         )
+    },
+    {
+        "id": "cur-cf-1",
+        "topic": "The (Greatest) Financial Hack in History",
+        "category": "Casual Finance Macro",
+        "curiosity_score": 99,
+        "niche": "finance",
+        "default_badge": "WALL STREET HACK",
+        "thumbnail_headline": "THEY DON'T PAY?!",
+        "thumbnail_sub": "THE GREATEST HACK",
+        "character_mood": "smirk",
+        "beats": [
+            ("0:00 - 0:03", "THE CONVERSATIONAL HOOK", "If you've ever wondered how billionaires pay less tax than their secretaries..."),
+            ("0:03 - 0:07", "THE FORMER-BANKER TRUTH", "Welcome to the greatest legal financial hack in human history: Buy, Borrow, Die."),
+            ("0:07 - 0:12", "THE MECHANICS", "Step one: Buy appreciating assets. Step two: Never sell them. Instead, pledge them as collateral and borrow millions at three percent interest."),
+            ("0:12 - 0:17", "THE IRS LOOPHOLE", "The IRS doesn't tax debt because debt isn't income. Congratulations: you just spent five million dollars completely tax-free."),
+            ("0:17 - 0:21", "THE PUNCHLINE", "And when you die? Stepped-up basis wipes out decades of capital gains taxes."),
+            ("0:21 - 0:25", "THE CYNICAL LOOP", "So while you're grinding 50 hours a week to pay income tax on your W-2, remember...")
+        ],
+        "full_text": (
+            "If you've ever wondered how billionaires pay less tax than their secretaries, welcome to the greatest legal financial "
+            "hack in human history: Buy, Borrow, Die. Step one: Buy appreciating assets. Step two: Never sell them. Instead, pledge "
+            "them as collateral to a private bank and borrow millions at three percent interest. The IRS doesn't tax debt because debt "
+            "isn't income. Congratulations: you just spent five million dollars completely tax-free. And when you die, the stepped-up "
+            "basis wipes out decades of capital gains. So while you're grinding fifty hours a week to pay income tax, remember..."
+        )
+    },
+    {
+        "id": "cur-cf-2",
+        "topic": "Why Everyone Is (Quietly) Ditching the US Dollar",
+        "category": "Casual Finance Macro",
+        "curiosity_score": 98,
+        "niche": "finance",
+        "default_badge": "DOLLAR CRISIS",
+        "thumbnail_headline": "DITCHING THE DOLLAR?!",
+        "thumbnail_sub": "CENTRAL BANK LEAK",
+        "character_mood": "eyebrow_raised",
+        "beats": [
+            ("0:00 - 0:03", "THE SKEPTICAL HOOK", "For fifty years, the US dollar had the greatest business model on planet earth."),
+            ("0:03 - 0:07", "THE UNFILTERED TRUTH", "America printed paper out of thin air, and the rest of the world sent us real oil, cars, and electronics."),
+            ("0:07 - 0:12", "THE SHOCKING REVERSAL", "In 2026, foreign central banks are quietly executing the largest gold accumulation since nineteen seventy-one."),
+            ("0:12 - 0:17", "THE REASON NOBODY ADMITS", "When the US froze foreign reserves in twenty twenty-two, every central banker realized: if they can freeze their money, they can freeze ours too."),
+            ("0:17 - 0:21", "THE WAKEUP CALL", "The financial press calls it de-dollarization. Wall Street calls it a structural shift."),
+            ("0:21 - 0:25", "THE CYNICAL LOOP", "And if you're keeping all your life savings in cash, remember that...")
+        ],
+        "full_text": (
+            "For fifty years, the US dollar had the greatest business model on planet earth. America printed paper out of thin air, "
+            "and the rest of the world sent us real oil, cars, and electronics. But in 2026, foreign central banks are quietly executing "
+            "the largest gold accumulation since nineteen seventy-one. When the US froze foreign reserves in twenty twenty-two, every central "
+            "banker realized: if they can freeze their money, they can freeze ours too. The press calls it de-dollarization. Wall Street calls "
+            "it a structural shift. And if you're keeping all your life savings in cash, remember that..."
+        )
+    },
+    {
+        "id": "cur-cf-3",
+        "topic": "WTF Is (Actually) Happening In The Stock Market?!",
+        "category": "Casual Finance Macro",
+        "curiosity_score": 99,
+        "niche": "finance",
+        "default_badge": "MARKET GLITCH",
+        "thumbnail_headline": "WTF IS HAPPENING?!",
+        "thumbnail_sub": "WALL STREET UNMASKED",
+        "character_mood": "shocked",
+        "beats": [
+            ("0:00 - 0:03", "THE DEADPAN HOOK", "If you looked at the stock market this week and thought 'this makes zero logical sense'..."),
+            ("0:03 - 0:07", "THE VALIDATION", "Congratulations: you are officially the only sane person left in the room."),
+            ("0:07 - 0:12", "THE BRUTAL REALITY", "Consumer debt hit record highs, corporate profits are slowing, yet the S&P 500 keeps ripping to all-time highs like a caffeinated toddler."),
+            ("0:12 - 0:17", "THE INSTITUTIONAL SECRET", "Eighty-five percent of daily volume isn't humans. It's automated passive funds and zero-day options algorithms trapped in a liquidity loop."),
+            ("0:17 - 0:21", "THE COLD CONCLUSION", "It's a giant game of musical chairs, and the music is being controlled by five tech stocks."),
+            ("0:21 - 0:25", "THE CYNICAL LOOP", "So before you blindly buy another index fund at the top, remember...")
+        ],
+        "full_text": (
+            "If you looked at the stock market this week and thought 'this makes zero logical sense', congratulations: you are officially "
+            "the only sane person left in the room. Consumer debt hit record highs, corporate profits are slowing, yet the S&P 500 keeps "
+            "ripping to all-time highs like a caffeinated toddler. Eighty-five percent of daily volume isn't humans. It's automated passive "
+            "funds and zero-day options algorithms trapped in a liquidity loop. It's a giant game of musical chairs, and the music is being "
+            "controlled by five tech stocks. So before you blindly buy another index fund at the top, remember..."
+        )
     }
 ]
 
