@@ -402,14 +402,54 @@ def api_curiosity_generate():
 
 def run_cli():
     parser = argparse.ArgumentParser(description="TubePulse US - CLI YouTube Automation")
-    parser.add_argument("--cli", action="store_true", help="Run in CLI mode")
-    parser.add_argument("--topic", type=str, default="The 2026 US Wealth Loophole", help="Video topic")
+    parser.add_argument("--cli", action="store_true", help="Run in CLI mode to generate a single video")
+    parser.add_argument("--autopilot", action="store_true", help="Trigger autonomous daily cycle (Phase 1 Shorts Blitz or Phase 2 Hybrid)")
+    parser.add_argument("--status", action="store_true", help="Display current channel growth phase, subscribers, and stats")
+    parser.add_argument("--advance-day", action="store_true", help="Advance channel timeline to the next day")
+    parser.add_argument("--topic", type=str, default="The (Greatest) Financial Hack in History", help="Video topic")
     parser.add_argument("--niche", type=str, default="finance", choices=list(US_NICHES.keys()), help="US Niche")
     parser.add_argument("--format", type=str, default="shorts", choices=["shorts", "long_form"], help="Video format")
     parser.add_argument("--badge", type=str, default=None, help="Custom thumbnail badge")
     parser.add_argument("--port", type=int, default=5000, help="Web server port")
 
     args = parser.parse_args()
+
+    if args.status:
+        from engine.autopilot_engine import load_channel_state
+        state = load_channel_state()
+        print("="*60)
+        print("📊 TubePulse US - Channel Evolution & Autopilot Status")
+        print("="*60)
+        print(f"Current Phase:   {state.get('current_phase')}")
+        print(f"Days Active:     Day {state.get('current_day')}")
+        print(f"Subscribers:     {state.get('audience_subscribers', 0):,} / {state.get('switch_threshold_subs', 500):,} target")
+        print(f"Total Views:     {state.get('audience_views', 0):,}")
+        print(f"Total Videos:    {state.get('total_videos_created', 0)}")
+        print(f"Autopilot:       {'Enabled (Autonomous Background Engine)' if state.get('autopilot_enabled') else 'Paused'}")
+        print("="*60)
+        return
+
+    if args.advance_day:
+        from engine.autopilot_engine import advance_channel_day
+        new_state = advance_channel_day()
+        print(f"✓ Channel advanced to Day {new_state['day_count']}! Current Phase: {new_state['current_phase_name']} (Subs: {new_state['subscribers']:,})")
+        return
+
+    if args.autopilot:
+        from engine.autopilot_engine import run_autonomous_cycle
+        print("="*60)
+        print("🤖 TubePulse US - Autonomous Video Creation Cycle Running...")
+        print("="*60)
+        cycle_res = run_autonomous_cycle()
+        print(f"Plan: {cycle_res.get('plan')}")
+        print(f"Phase: {cycle_res.get('phase')}")
+        print(f"Created {len(cycle_res.get('created_videos', []))} video(s) autonomously:")
+        for v in cycle_res.get("created_videos", []):
+            print(f"  • [{v.get('format').upper()}] {v.get('title')}")
+            print(f"    Video: {v.get('video_url')}")
+            print(f"    Thumbnail: {v.get('thumbnail_url')}")
+        print("="*60)
+        return
 
     if args.cli:
         print("="*60)
