@@ -15,6 +15,8 @@ from engine.thumbnail_engine import generate_thumbnail
 from engine.video_engine import render_automated_video
 from engine.seo_engine import generate_seo_package, calculate_us_revenue_projection
 from engine.scheduler import add_to_queue, load_queue, create_export_package
+from engine.curiosity_engine import CURIOSITY_VAULT, get_random_curiosity_topic, generate_curiosity_script
+from engine.autopilot_engine import load_channel_state, advance_channel_day, run_autonomous_cycle, force_switch_phase
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,7 +36,11 @@ IS_ONLINE = False
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
         "🚀 *TubePulse US - Autonomous YouTube Bot*\n\n"
-        "Your channel automation assistant for high-RPM US audiences.\n\n"
+        "Your autonomous curiosity producer & channel growth assistant.\n\n"
+        "*Growth & Autopilot Commands:*\n"
+        "• `/autopilot` - View current phase (Shorts-Only vs Hybrid) & growth stats\n"
+        "• `/curiosity` - Generate an ultra-high curiosity video package\n"
+        "• `/advanceday` - Advance channel lifecycle to next day (+1 Day)\n\n"
         "*YouTube Automation Commands:*\n"
         "• `/generate <topic>` - Produce full video & thumbnail for US viewers\n"
         "• `/trends` - List top trending US keywords & RPMs\n"
@@ -48,6 +54,89 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "• `/setmessage <text>` - Update auto-reply text"
     )
     await update.message.reply_text(welcome_text, parse_mode="Markdown")
+
+
+async def autopilot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    state = load_channel_state()
+    phase_title = "⚡ Phase 1: Shorts-Only Blitz (Audience Acquisition)" if state["current_phase"] == "SHORTS_BLITZ" else "🚀 Phase 2: Hybrid Scale (Shorts + Long-Form Videos)"
+    
+    msg = (
+        f"🤖 *TubePulse US - Channel Autopilot Status*\n\n"
+        f"• *Strategy Phase:* `{state['current_phase']}`\n"
+        f"  _{phase_title}_\n\n"
+        f"• *Channel Timeline:* Day *{state['current_day']}* of {state['shorts_only_duration_days']}\n"
+        f"• *Audience Subscribers:* *{state['audience_subscribers']:,}* / {state['switch_threshold_subs']:,}\n"
+        f"• *Cumulative Views:* *{state['audience_views']:,}*\n"
+        f"• *Total Videos Created:* *{state['total_videos_created']}*\n\n"
+        f"Type `/advanceday` to simulate the next day's autonomous production batch!"
+    )
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
+
+async def curiosity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🔍 Selecting an ultra-high curiosity topic from the Curiosity Vault...", parse_mode="Markdown")
+    topic_item = get_random_curiosity_topic()
+    
+    await update.message.reply_text(
+        f"💡 *Topic Picked:* {topic_item['topic']}\n"
+        f"🔥 *Intrigue Score:* {topic_item['curiosity_score']}%\n"
+        f"🧩 *The Anomaly:* _{topic_item['anomaly']}_\n\n"
+        f"Producing 1080p video with open-loop hook...",
+        parse_mode="Markdown"
+    )
+
+    try:
+        script = generate_curiosity_script(topic_item, "shorts")
+        thumb_path = generate_thumbnail(topic_item["topic"], topic_item.get("niche", "finance"), topic_item.get("default_badge"))
+        video_res = render_automated_video(script, topic_item.get("niche", "finance"), "shorts")
+        seo = generate_seo_package(topic_item["topic"], topic_item.get("niche", "finance"), "shorts")
+
+        add_to_queue({
+            "topic": topic_item["topic"],
+            "niche": topic_item.get("niche", "finance"),
+            "format": "Shorts (9:16)",
+            "title": seo["selected_title"],
+            "video_url": video_res["url"],
+            "thumbnail_url": f"/static/media/thumbnails/{os.path.basename(thumb_path)}",
+            "duration": f"{video_res['duration']}s",
+            "scheduled_slot_us": "Today at 12:00 PM EDT (US Lunch Peak)",
+            "projected_rpm": "$14.50"
+        })
+
+        msg = (
+            f"✅ *Curiosity Video Ready & Queued!*\n\n"
+            f"🎬 *Title:* {seo['selected_title']}\n"
+            f"⏱️ *Duration:* {video_res['duration']}s (Shorts 9:16)\n"
+            f"🪝 *Hook:* \"_{topic_item['open_loop_hook'][:100]}..._\"\n\n"
+            f"Queued for peak US lunch rush!"
+        )
+        await update.message.reply_text(msg, parse_mode="Markdown")
+
+        if os.path.exists(thumb_path):
+            with open(thumb_path, "rb") as photo:
+                await update.message.reply_photo(photo=photo, caption=f"Thumbnail: {topic_item['topic']}")
+
+    except Exception as e:
+        logger.exception("Error in /curiosity:")
+        await update.message.reply_text(f"❌ Error: {str(e)}")
+
+
+async def advanceday_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("⏳ Advancing channel to the next day and producing daily batch...", parse_mode="Markdown")
+    try:
+        res = advance_channel_day()
+        msg = (
+            f"⏩ *Channel Advanced to Day {res['day']}!*\n\n"
+            f"• *Current Phase:* `{res['phase']}`\n"
+            f"• *New Subscribers:* *{res['audience']['subscribers']:,}*\n"
+            f"• *Videos Produced Today:* *{len(res['items_created'])}*\n\n"
+        )
+        for idx, item in enumerate(res['items_created'], 1):
+            msg += f"{idx}. *{item.get('title', item['topic'])}* ({item.get('format', 'Shorts')})\n"
+        await update.message.reply_text(msg, parse_mode="Markdown")
+    except Exception as e:
+        logger.exception("Error in /advanceday:")
+        await update.message.reply_text(f"❌ Error: {str(e)}")
 
 
 async def generate_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -220,6 +309,9 @@ def main():
 
     # YouTube Automation Handlers
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("autopilot", autopilot_command))
+    app.add_handler(CommandHandler("curiosity", curiosity_command))
+    app.add_handler(CommandHandler("advanceday", advanceday_command))
     app.add_handler(CommandHandler("generate", generate_command))
     app.add_handler(CommandHandler("trends", trends_command))
     app.add_handler(CommandHandler("schedule", schedule_command))

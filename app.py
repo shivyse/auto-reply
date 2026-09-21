@@ -31,6 +31,19 @@ from engine.scheduler import (
     create_export_package,
     simulate_youtube_api_upload,
 )
+from engine.curiosity_engine import (
+    CURIOSITY_VAULT,
+    get_random_curiosity_topic,
+    generate_curiosity_script,
+    analyze_curiosity_gap,
+)
+from engine.autopilot_engine import (
+    load_channel_state,
+    save_channel_state,
+    run_autonomous_cycle,
+    advance_channel_day,
+    force_switch_phase,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("TubePulseUS")
@@ -283,6 +296,106 @@ def api_batch_generate():
         "status": "success",
         "batch_count": len(created_items),
         "items": created_items
+    })
+
+# ----------------- AUTOPILOT & CURIOSITY ENDPOINTS -----------------
+
+@app.route("/api/autopilot/status", methods=["GET"])
+def api_autopilot_status():
+    """Returns current channel growth phase, day, metrics, and activity log."""
+    state = load_channel_state()
+    return jsonify(state)
+
+@app.route("/api/autopilot/run-cycle", methods=["POST"])
+def api_autopilot_run_cycle():
+    """Executes the daily autonomous cycle according to current phase."""
+    res = run_autonomous_cycle()
+    return jsonify(res)
+
+@app.route("/api/autopilot/advance-day", methods=["POST"])
+def api_autopilot_advance_day():
+    """Advances channel day and produces the day's videos according to strategy."""
+    res = advance_channel_day()
+    return jsonify(res)
+
+@app.route("/api/autopilot/switch-phase", methods=["POST"])
+def api_autopilot_switch_phase():
+    """Manually toggles or forces phase switch between Shorts-Only and Hybrid."""
+    data = request.json or {}
+    target = data.get("target_phase")
+    state = force_switch_phase(target)
+    return jsonify({"status": "success", "new_phase": state["current_phase"], "state": state})
+
+@app.route("/api/autopilot/configure", methods=["POST"])
+def api_autopilot_configure():
+    """Configures days of shorts-only and subscriber thresholds."""
+    data = request.json or {}
+    state = load_channel_state()
+
+    if "shorts_only_duration_days" in data:
+        state["shorts_only_duration_days"] = int(data["shorts_only_duration_days"])
+    if "switch_threshold_subs" in data:
+        state["switch_threshold_subs"] = int(data["switch_threshold_subs"])
+    if "autopilot_enabled" in data:
+        state["autopilot_enabled"] = bool(data["autopilot_enabled"])
+
+    save_channel_state(state)
+    return jsonify({"status": "success", "state": state})
+
+@app.route("/api/curiosity/topics", methods=["GET"])
+def api_curiosity_topics():
+    """Returns the curiosity vault topics with intrigue scores and formulas."""
+    return jsonify({
+        "topics": CURIOSITY_VAULT,
+        "count": len(CURIOSITY_VAULT)
+    })
+
+@app.route("/api/curiosity/generate", methods=["POST"])
+def api_curiosity_generate():
+    """Generates an ultra-high curiosity video package from topic ID or random."""
+    data = request.json or {}
+    topic_id = data.get("topic_id")
+    format_type = data.get("format", "shorts")
+
+    topic_item = None
+    if topic_id:
+        for t in CURIOSITY_VAULT:
+            if t["id"] == topic_id:
+                topic_item = t
+                break
+    if not topic_item:
+        topic_item = get_random_curiosity_topic()
+
+    # Generate Curiosity script
+    script = generate_curiosity_script(topic_item, format_type)
+    thumb_path = generate_thumbnail(topic_item["topic"], topic_item.get("niche", "finance"), topic_item.get("default_badge"))
+    thumb_filename = os.path.basename(thumb_path)
+    video_res = render_automated_video(script, topic_item.get("niche", "finance"), format_type)
+    seo = generate_seo_package(topic_item["topic"], topic_item.get("niche", "finance"), format_type)
+
+    queue_item = add_to_queue({
+        "topic": topic_item["topic"],
+        "niche": topic_item.get("niche", "finance"),
+        "format": "Shorts (9:16)" if format_type == "shorts" else "Long-Form (16:9)",
+        "title": seo["selected_title"],
+        "video_url": video_res["url"],
+        "thumbnail_url": f"/static/media/thumbnails/{thumb_filename}",
+        "duration": f"{video_res['duration']}s",
+        "scheduled_slot_us": "Today at 12:00 PM EDT (US Lunch Peak)",
+        "projected_rpm": "$32.00" if format_type != "shorts" else "$14.50"
+    })
+
+    zip_url = create_export_package(queue_item["id"], video_res["video_path"], thumb_path, script["full_text"], seo)
+
+    return jsonify({
+        "status": "success",
+        "topic_item": topic_item,
+        "script": script,
+        "video": video_res,
+        "thumbnail_url": f"/static/media/thumbnails/{thumb_filename}",
+        "seo": seo,
+        "queue_item": queue_item,
+        "bundle_zip_url": zip_url
     })
 
 # ----------------- CLI MODE -----------------

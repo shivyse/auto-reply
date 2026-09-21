@@ -1,0 +1,51 @@
+{
+  "channel_name": "TubePulse US - Curiosity & High-RPM Channel",
+  "autopilot_enabled": true,
+  "current_day": 4,
+  "shorts_only_duration_days": 5,
+  "current_phase": "HYBRID_EXPANSION",
+  "audience_subscribers": 592,
+  "audience_views": 55250,
+  "switch_threshold_subs": 500,
+  "total_videos_created": 7,
+  "last_run_time": "2026-09-21 04:16:29 UTC",
+  "used_topic_ids": [
+    "cur-1",
+    "cur-7",
+    "cur-6",
+    "cur-3",
+    "cur-8"
+  ],
+  "activity_log": [
+    {
+      "timestamp": "Day 4, 12:00 PM EDT",
+      "type": "PHASE_TRANSITION",
+      "message": "\ud83c\udf89 AUDIENCE MILESTONE UNLOCKED! Switched from Shorts-Only to HYBRID EXPANSION (Shorts + Long-Form Videos). Target Day: 4, Audience: 592 subs."
+    },
+    {
+      "timestamp": "Day 4, 12:00 PM EDT",
+      "type": "AUTO_SHORT_CREATED",
+      "message": "Autonomous Short Produced: 'The FBI Cold Case at the Abandoned Hotel Room 404' (Curiosity: 98%). Audience gained: +135 subs."
+    },
+    {
+      "timestamp": "Day 3, 12:00 PM EDT",
+      "type": "AUTO_SHORT_CREATED",
+      "message": "Autonomous Short Produced: 'The Star Note Dollar Bill Glitch' (Curiosity: 97%). Audience gained: +120 subs."
+    },
+    {
+      "timestamp": "Day 2, 12:00 PM EDT",
+      "type": "AUTO_SHORT_CREATED",
+      "message": "Autonomous Short Produced: 'The Math Professor Who Beat the Michigan Lottery' (Curiosity: 97%). Audience gained: +105 subs."
+    },
+    {
+      "timestamp": "Day 1, 12:00 PM EDT",
+      "type": "AUTO_SHORT_CREATED",
+      "message": "Autonomous Short Produced: 'What Steve Jobs Told His Kids About the iPad' (Curiosity: 94%). Audience gained: +90 subs."
+    },
+    {
+      "timestamp": "Day 1, 08:00 AM EDT",
+      "type": "PHASE_START",
+      "message": "Channel launched in Phase 1: Shorts-Only Blitz. Goal: Rapid subscriber acquisition via YouTube Shorts algorithmic velocity."
+    }
+  ]
+}

@@ -47,6 +47,9 @@
         <button class="nav-item active" data-tab="tab-automate">
           <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Automation
         </button>
+        <button class="nav-item" data-tab="tab-autopilot">
+          <i class="fa-solid fa-robot"></i> Curiosity Autopilot
+        </button>
         <button class="nav-item" data-tab="tab-trends">
           <i class="fa-solid fa-chart-line"></i> US Trend Radar
         </button>
@@ -223,6 +226,115 @@
               <strong>Video Description & Chapters:</strong>
               <textarea id="dispDesc" class="form-textarea" rows="4" readonly>🔥 What 99% of people in the United States don't realize about The 2026 US Tax Loophole...</textarea>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 1.5: CURIOSITY AUTOPILOT (ADAPTIVE CHANNEL GROWTH) -->
+      <section class="tab-content" id="tab-autopilot">
+        <div class="section-hero">
+          <div class="hero-badge"><i class="fa-solid fa-brain"></i> Autonomous Topic Discovery & Channel Evolution</div>
+          <h1>Curiosity Autopilot & Ramp-Up Engine</h1>
+          <p class="subtitle">Autonomous system that picks high-intrigue American topics, writes open-loop scripts, renders videos, and automatically transitions from a <strong>Shorts-Only Blitz</strong> to a <strong>Hybrid Shorts + Long-Form Strategy</strong> as your audience grows.</p>
+        </div>
+
+        <!-- Strategy Growth Timeline Banner -->
+        <div class="card strategy-banner-card">
+          <div class="card-header">
+            <div class="d-flex align-center gap-12">
+              <h2><i class="fa-solid fa-chart-line-up text-cyan"></i> Adaptive Growth Strategy Engine</h2>
+              <span class="badge" id="currentPhaseBadge">Phase 1: Shorts-Only Blitz</span>
+            </div>
+            <div class="phase-action-buttons">
+              <button class="btn btn-sm btn-outline" id="btnTogglePhase" title="Force switch phase for testing">
+                <i class="fa-solid fa-repeat"></i> Toggle Phase Mode
+              </button>
+              <button class="btn btn-sm btn-secondary" id="btnAdvanceDay">
+                <i class="fa-solid fa-forward-step"></i> Advance to Next Day (+1 Day)
+              </button>
+              <button class="btn btn-sm btn-primary" id="btnRunDailyCycle">
+                <i class="fa-solid fa-play"></i> Run Today's Production
+              </button>
+            </div>
+          </div>
+
+          <!-- Strategy Two-Phase Visual Pipeline -->
+          <div class="growth-phases-grid">
+            <div class="phase-box" id="phaseBoxShorts">
+              <div class="phase-number">PHASE 1</div>
+              <div class="phase-title">⚡ Shorts-Only Blitz</div>
+              <div class="phase-sub">First 5 Days (Audience Acquisition)</div>
+              <p class="phase-desc">Uploads 2–3 high-curiosity YouTube Shorts daily. Capitalizes on the Shorts algorithm to bypass subscriber authority and trigger initial viral US impressions.</p>
+              <div class="phase-status-tag" id="tagShortsStatus">● ACTIVE PHASE</div>
+            </div>
+
+            <div class="phase-arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+              <div class="arrow-condition">After 5 Days or 500+ Subs</div>
+            </div>
+
+            <div class="phase-box" id="phaseBoxHybrid">
+              <div class="phase-number">PHASE 2</div>
+              <div class="phase-title">🚀 Hybrid Expansion</div>
+              <div class="phase-sub">Day 6+ (Audience Monetization)</div>
+              <p class="phase-desc">Switches to publishing <strong>both</strong> Shorts (for continuous top-of-funnel reach) and <strong>Long-Form Videos</strong> (8–12 min, mid-roll ads, $25–$55 RPM) to monetize loyalty.</p>
+              <div class="phase-status-tag" id="tagHybridStatus">LOCKED (Unlocks Day 6)</div>
+            </div>
+          </div>
+
+          <!-- Growth Metrics & Progress Bar -->
+          <div class="growth-stats-row mt-4">
+            <div class="growth-stat">
+              <div class="g-stat-label">Current Channel Day</div>
+              <div class="g-stat-val" id="dispCurrentDay">Day 1 of 5</div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="dayProgressFill" style="width: 20%;"></div>
+              </div>
+            </div>
+
+            <div class="growth-stat">
+              <div class="g-stat-label">Audience Subscribers</div>
+              <div class="g-stat-val text-emerald" id="dispSubscribers">142 / 500</div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill progress-emerald" id="subProgressFill" style="width: 28%;"></div>
+              </div>
+            </div>
+
+            <div class="growth-stat">
+              <div class="g-stat-label">Cumulative US Views</div>
+              <div class="g-stat-val text-cyan" id="dispCumulativeViews">18,450</div>
+              <div class="text-xs text-muted">Viral velocity accelerating</div>
+            </div>
+
+            <div class="growth-stat">
+              <div class="g-stat-label">Autopilot Schedule</div>
+              <div class="g-stat-val text-amber" id="dispScheduleMode">2 Shorts / Day</div>
+              <div class="text-xs text-muted">Lunch (12 PM) & Prime (5 PM EDT)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Curiosity Topic Radar & Vault -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-fire-flame-curved text-amber"></i> The Curiosity Vault (Psychological Open-Loop Topics)</h2>
+            <span class="badge badge-accent">Engineered For 95%+ US Retention</span>
+          </div>
+          <p class="text-muted text-xs mb-3">Topics selected using the <strong>Information Gap Theory</strong>: stating an anomaly in the first 2 seconds, withholds the answer until the climax, and loops back seamlessly.</p>
+
+          <div class="curiosity-grid" id="curiosityVaultContainer">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <!-- Live Autopilot Activity Feed -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-list-ul text-cyan"></i> Autonomous Pipeline Activity Log</h2>
+            <button class="btn btn-sm btn-outline" id="btnRefreshActivity"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
+          <div class="activity-log-box" id="autopilotLogBox">
+            <!-- Dynamically populated -->
           </div>
         </div>
       </section>

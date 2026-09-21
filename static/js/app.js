@@ -6,12 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let appIntel = null;
   let availableVoices = [];
   let selectedVoiceId = "caleb_us";
+  let channelState = null;
 
   // Init App
   initNavigation();
   fetchUSIntel();
   fetchVoices();
   fetchQueue();
+  fetchAutopilot();
+  fetchCuriosityVault();
   setupEventListeners();
   startUSTimeTicker();
 });
@@ -71,16 +74,180 @@ async function fetchVoices() {
   }
 }
 
-async function fetchQueue() {
+// ----------------- AUTOPILOT & CURIOSITY API -----------------
+
+async function fetchAutopilot() {
   try {
-    const res = await fetch("/api/queue");
-    const data = await res.json();
-    renderQueue(data.queue || []);
-    if (data.optimal_slot) updateOptimalSlot(data.optimal_slot);
+    const res = await fetch("/api/autopilot/status");
+    const state = await res.json();
+    renderAutopilotState(state);
   } catch (err) {
-    console.error("Error fetching queue:", err);
+    console.error("Error fetching autopilot status:", err);
   }
 }
+
+function renderAutopilotState(state) {
+  if (!state) return;
+
+  const currentDay = state.current_day || 1;
+  const maxShortsDays = state.shorts_only_duration_days || 5;
+  const subs = state.audience_subscribers || 0;
+  const targetSubs = state.switch_threshold_subs || 500;
+  const phase = state.current_phase || "SHORTS_BLITZ";
+
+  // Phase Badge
+  const badge = document.getElementById("currentPhaseBadge");
+  if (badge) {
+    if (phase === "SHORTS_BLITZ") {
+      badge.className = "badge badge-accent";
+      badge.innerHTML = `<i class="fa-solid fa-bolt"></i> Phase 1: Shorts-Only Blitz (Day ${currentDay})`;
+    } else {
+      badge.className = "badge badge-success";
+      badge.innerHTML = `<i class="fa-solid fa-rocket"></i> Phase 2: Hybrid Scale (Shorts + Long-Form)`;
+    }
+  }
+
+  // Phase Boxes Styling
+  const boxShorts = document.getElementById("phaseBoxShorts");
+  const boxHybrid = document.getElementById("phaseBoxHybrid");
+  const tagShorts = document.getElementById("tagShortsStatus");
+  const tagHybrid = document.getElementById("tagHybridStatus");
+
+  if (boxShorts && boxHybrid) {
+    if (phase === "SHORTS_BLITZ") {
+      boxShorts.className = "phase-box phase-active";
+      boxHybrid.className = "phase-box phase-locked";
+      if (tagShorts) tagShorts.innerHTML = "● ACTIVE STRATEGY";
+      if (tagHybrid) tagHybrid.innerHTML = `LOCKED (Unlocks Day ${maxShortsDays + 1} or 500 Subs)`;
+    } else {
+      boxShorts.className = "phase-box";
+      boxHybrid.className = "phase-box phase-active";
+      if (tagShorts) tagShorts.innerHTML = "COMPLETED (Now Running in Hybrid)";
+      if (tagHybrid) tagHybrid.innerHTML = "● ACTIVE STRATEGY (Shorts + Long-Form)";
+    }
+  }
+
+  // Day & Subscriber Progress
+  const dispDay = document.getElementById("dispCurrentDay");
+  if (dispDay) dispDay.textContent = `Day ${currentDay} of ${maxShortsDays}`;
+
+  const dayFill = document.getElementById("dayProgressFill");
+  if (dayFill) {
+    const dayPct = Math.min(100, Math.round((currentDay / maxShortsDays) * 100));
+    dayFill.style.width = `${dayPct}%`;
+  }
+
+  const dispSubs = document.getElementById("dispSubscribers");
+  if (dispSubs) dispSubs.textContent = `${subs.toLocaleString()} / ${targetSubs.toLocaleString()} Subs`;
+
+  const subFill = document.getElementById("subProgressFill");
+  if (subFill) {
+    const subPct = Math.min(100, Math.round((subs / targetSubs) * 100));
+    subFill.style.width = `${subPct}%`;
+  }
+
+  const dispViews = document.getElementById("dispCumulativeViews");
+  if (dispViews) dispViews.textContent = (state.audience_views || 0).toLocaleString();
+
+  const dispSched = document.getElementById("dispScheduleMode");
+  if (dispSched) {
+    dispSched.textContent = phase === "SHORTS_BLITZ" ? "2 Shorts / Day" : "1 Short + 1 Long / Day";
+  }
+
+  // Activity Log
+  const logBox = document.getElementById("autopilotLogBox");
+  if (logBox && state.activity_log) {
+    logBox.innerHTML = "";
+    state.activity_log.slice(0, 10).forEach(entry => {
+      const row = document.createElement("div");
+      row.className = "log-entry";
+      row.innerHTML = `
+        <div class="log-time">${entry.timestamp}</div>
+        <div class="log-msg">${entry.message}</div>
+      `;
+      logBox.appendChild(row);
+    });
+  }
+}
+
+async function fetchCuriosityVault() {
+  try {
+    const res = await fetch("/api/curiosity/topics");
+    const data = await res.json();
+    renderCuriosityTopics(data.topics || []);
+  } catch (err) {
+    console.error("Error fetching curiosity vault:", err);
+  }
+}
+
+function renderCuriosityTopics(topics) {
+  const container = document.getElementById("curiosityVaultContainer");
+  if (!container || !topics) return;
+
+  container.innerHTML = "";
+  topics.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "curiosity-card";
+    card.innerHTML = `
+      <div>
+        <div class="cur-card-top">
+          <span class="tag-pill">${t.category}</span>
+          <span class="cur-score-badge"><i class="fa-solid fa-fire"></i> ${t.curiosity_score}% Intrigue</span>
+        </div>
+        <div class="cur-title">${t.topic}</div>
+        <div class="cur-anomaly"><strong>The Anomaly:</strong> ${t.anomaly}</div>
+        <div class="cur-hook-box">"${t.open_loop_hook}"</div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-sm btn-primary btn-auto-curiosity" data-id="${t.id}" data-format="shorts" style="flex:1;">
+          <i class="fa-solid fa-play"></i> Auto-Create Short
+        </button>
+        <button class="btn btn-sm btn-secondary btn-auto-curiosity" data-id="${t.id}" data-format="long_form" title="Create 10m Long-Form Video">
+          <i class="fa-solid fa-film"></i> Long-Form
+        </button>
+      </div>
+    `;
+
+    card.querySelectorAll(".btn-auto-curiosity").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.currentTarget.getAttribute("data-id");
+        const format = e.currentTarget.getAttribute("data-format");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Producing...`;
+        showToast(`Autonomous production started for: "${t.topic}" (${format})...`, "info");
+
+        try {
+          const res = await fetch("/api/curiosity/generate", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({topic_id: id, format})
+          });
+          const d = await res.json();
+          showToast(`🎉 Video Ready! Added to US Publishing Queue.`, "success");
+          fetchQueue();
+          fetchAutopilot();
+
+          // Switch to 1-Click automate tab and show player
+          document.querySelector('[data-tab="tab-automate"]').click();
+          const player = document.getElementById("renderedVideoPlayer");
+          if (player && d.video) {
+            player.src = d.video.url;
+            player.poster = d.thumbnail_url;
+            player.load();
+          }
+        } catch (err) {
+          showToast("Error generating curiosity video: " + err.message, "error");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = format === "shorts" ? `<i class="fa-solid fa-play"></i> Auto-Create Short` : `<i class="fa-solid fa-film"></i> Long-Form`;
+        }
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
 
 // ----------------- RENDER FUNCTIONS -----------------
 
@@ -404,6 +571,81 @@ function setupEventListeners() {
     btnRefreshQueue.addEventListener("click", () => {
       fetchQueue();
       showToast("Publishing queue refreshed!", "info");
+    });
+  }
+
+  // Autopilot Buttons
+  const btnAdvanceDay = document.getElementById("btnAdvanceDay");
+  if (btnAdvanceDay) {
+    btnAdvanceDay.addEventListener("click", async () => {
+      btnAdvanceDay.disabled = true;
+      btnAdvanceDay.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Advancing Day & Producing...`;
+      showToast("Advancing channel to next day...", "info");
+
+      try {
+        const res = await fetch("/api/autopilot/advance-day", {
+          method: "POST"
+        });
+        const d = await res.json();
+        renderAutopilotState(d.state);
+        fetchQueue();
+        showToast(`Advanced to Day ${d.day}! Phase: ${d.phase}. New audience: ${d.audience.subscribers} subs.`, "success");
+      } catch (err) {
+        showToast("Error advancing day: " + err.message, "error");
+      } finally {
+        btnAdvanceDay.disabled = false;
+        btnAdvanceDay.innerHTML = `<i class="fa-solid fa-forward-step"></i> Advance to Next Day (+1 Day)`;
+      }
+    });
+  }
+
+  const btnRunDailyCycle = document.getElementById("btnRunDailyCycle");
+  if (btnRunDailyCycle) {
+    btnRunDailyCycle.addEventListener("click", async () => {
+      btnRunDailyCycle.disabled = true;
+      btnRunDailyCycle.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Executing Daily Run...`;
+      showToast("Executing autonomous creation cycle...", "info");
+
+      try {
+        const res = await fetch("/api/autopilot/run-cycle", {
+          method: "POST"
+        });
+        const d = await res.json();
+        renderAutopilotState(d.state);
+        fetchQueue();
+        showToast(`Cycle finished! Produced ${d.items_created.length} new videos for ${d.phase}.`, "success");
+      } catch (err) {
+        showToast("Error executing cycle: " + err.message, "error");
+      } finally {
+        btnRunDailyCycle.disabled = false;
+        btnRunDailyCycle.innerHTML = `<i class="fa-solid fa-play"></i> Run Today's Production`;
+      }
+    });
+  }
+
+  const btnTogglePhase = document.getElementById("btnTogglePhase");
+  if (btnTogglePhase) {
+    btnTogglePhase.addEventListener("click", async () => {
+      try {
+        const res = await fetch("/api/autopilot/switch-phase", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({})
+        });
+        const d = await res.json();
+        renderAutopilotState(d.state);
+        showToast(`Phase toggled to: ${d.new_phase}`, "info");
+      } catch (err) {
+        showToast("Error toggling phase: " + err.message, "error");
+      }
+    });
+  }
+
+  const btnRefreshActivity = document.getElementById("btnRefreshActivity");
+  if (btnRefreshActivity) {
+    btnRefreshActivity.addEventListener("click", () => {
+      fetchAutopilot();
+      showToast("Activity log refreshed!", "info");
     });
   }
 }

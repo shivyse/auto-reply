@@ -22,8 +22,14 @@ An end-to-end, autonomous YouTube Production & Publishing suite engineered speci
 
 ## ⚡ Core Features
 
+- **🧠 Curiosity Autopilot & Ramp-Up Engine**:
+  - Automatically discovers high-intrigue American topics using the **Information Gap Theory**.
+  - **Two-Phase Channel Growth Lifecycle**:
+    * **Phase 1: Shorts-Only Blitz (Days 1–5 / Initial Audience Ramp-Up)**: Uploads exclusively high-retention vertical Shorts (1080x1920) at US peak hours to bypass YouTube's cold-start subscriber requirement and trigger initial viral discovery.
+    * **Phase 2: Hybrid Scale (Day 6+ / 500+ Subscribers)**: Automatically graduates to a hybrid schedule publishing **both** high-velocity viral Shorts (midday) and 10-minute high-RPM Long-Form Videos (evening) with mid-roll ad markers!
+  - Real-time simulation buttons: **"Advance to Next Day"**, **"Run Today's Production"**, and **"Toggle Phase"**.
 - **🚀 1-Click Autonomous Video Producer**: Enter any topic or click a trending US keyword to generate the script, render the 1280x720 thumbnail, compile the 1080p MP4 video with FFmpeg, generate YouTube SEO metadata, and bundle everything into a downloadable `.zip`.
-- **📈 US Trend Radar**: Real-time trending US search topics, competition difficulty scores, and projected RPM estimations.
+- **📈 US Trend Radar & Curiosity Vault**: Real-time trending US search topics, declassified American mysteries, psychological loopholes, and projected RPM estimations.
 - **✍️ US Script & Retention Engine**: Generates scripts for both **YouTube Shorts (9:16 vertical)** and **Long-Form (16:9 8–12 min)** with readability scores (Flesch Grade 6–8) and hook strength diagnostics.
 - **🎙️ American Voice & Audio Studio ("US Audios")**:
   - In-browser auditioning of 4 American voice models (`Caleb - Tech`, `Marcus - Crime`, `Sarah - Viral`, `Emily - Storyteller`) using Web Speech API.
