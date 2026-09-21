@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TubePulse US - AI YouTube Automation for United States Audiences</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header / Nav -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <i class="fa-brands fa-youtube logo-icon"></i>
+        <div class="logo-text">
+          <span class="logo-title">TubePulse<span class="us-badge">US</span></span>
+          <span class="logo-sub">High-RPM US Audience YouTube Engine</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- US Real-Time Clocks -->
+    <div class="header-center">
+      <div class="timezone-ticker" id="tzTicker">
+        <div class="tz-item active-tz"><span class="tz-code">EST:</span> <span id="estTime">--:-- --</span></div>
+        <div class="tz-item"><span class="tz-code">CST:</span> <span id="cstTime">--:-- --</span></div>
+        <div class="tz-item"><span class="tz-code">MST:</span> <span id="mstTime">--:-- --</span></div>
+        <div class="tz-item"><span class="tz-code">PST:</span> <span id="pstTime">--:-- --</span></div>
+      </div>
+      <div class="optimal-slot-pill" id="optimalSlotPill" title="Next recommended US upload time">
+        <i class="fa-solid fa-clock"></i> Next Peak: <span id="nextSlotText">Calculating...</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="btn btn-outline" id="btnRefreshIntel"><i class="fa-solid fa-rotate"></i> Refresh Intel</button>
+      <button class="btn btn-primary" id="btnQuickNavAutomate"><i class="fa-solid fa-bolt"></i> 1-Click Automate</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="tab-automate">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Automation
+        </button>
+        <button class="nav-item" data-tab="tab-trends">
+          <i class="fa-solid fa-chart-line"></i> US Trend Radar
+        </button>
+        <button class="nav-item" data-tab="tab-scripts">
+          <i class="fa-solid fa-file-lines"></i> Script & Retention
+        </button>
+        <button class="nav-item" data-tab="tab-audio">
+          <i class="fa-solid fa-microphone-lines"></i> US Voices & Audio
+        </button>
+        <button class="nav-item" data-tab="tab-video">
+          <i class="fa-solid fa-video"></i> Video & Thumbnails
+        </button>
+        <button class="nav-item" data-tab="tab-schedule">
+          <i class="fa-solid fa-calendar-days"></i> US Peak Scheduler
+        </button>
+        <button class="nav-item" data-tab="tab-revenue">
+          <i class="fa-solid fa-sack-dollar"></i> US RPM Calculator
+        </button>
+        <button class="nav-item" data-tab="tab-telegram">
+          <i class="fa-brands fa-telegram"></i> Telegram Bot Bridge
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="stat-card-mini">
+          <div class="stat-label">Avg US Audience RPM</div>
+          <div class="stat-value text-emerald">$28.40 - $55.00</div>
+          <div class="stat-hint">7.8x Higher than Global Avg</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content Workspace -->
+    <main class="content-area">
+
+      <!-- TAB 1: 1-CLICK AUTOMATION (FLAGSHIP) -->
+      <section class="tab-content active" id="tab-automate">
+        <div class="section-hero">
+          <div class="hero-badge"><i class="fa-solid fa-flag-usa"></i> Engineered Specifically For American Viewers</div>
+          <h1>Autonomous YouTube Video Producer</h1>
+          <p class="subtitle">Turn any idea or trending US keyword into a high-retention 1080p video, 1280x720 thumbnail, American voiceover script, and complete SEO package ready for YouTube Studio.</p>
+        </div>
+
+        <div class="grid-2-col">
+          <!-- Input Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-sliders"></i> Video Setup</h2>
+              <span class="badge badge-accent">US Optimized</span>
+            </div>
+
+            <form id="quickAutomateForm">
+              <div class="form-group">
+                <label for="autoTopic">Topic or Headline:</label>
+                <div class="input-with-button">
+                  <input type="text" id="autoTopic" class="form-input" value="The 2026 US Tax Loophole Rich Americans Quietly Use" required>
+                  <button type="button" class="btn btn-secondary" id="btnRandomTrend" title="Pick Random Viral US Trend">
+                    <i class="fa-solid fa-shuffle"></i> Viral Trend
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="autoNiche">Target US Niche & RPM:</label>
+                  <select id="autoNiche" class="form-select">
+                    <option value="finance" selected>💰 US Personal Finance & Wealth ($34.50 RPM)</option>
+                    <option value="tech_ai">⚡ Silicon Valley & AI Tech ($28.00 RPM)</option>
+                    <option value="true_crime">🔥 American True Crime & FBI ($19.50 RPM)</option>
+                    <option value="us_real_estate">🏡 US Real Estate & Housing ($38.00 RPM)</option>
+                    <option value="luxury_megaprojects">🚀 US Megaprojects & Military ($22.00 RPM)</option>
+                    <option value="viral_psychology">📱 Viral US Shorts & Psychology ($11.50 RPM)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="autoFormat">YouTube Format:</label>
+                  <select id="autoFormat" class="form-select">
+                    <option value="shorts" selected>YouTube Shorts (9:16 Vertical • 1080x1920)</option>
+                    <option value="long_form">Long-Form Video (16:9 Landscape • 1920x1080)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="autoBadge">Thumbnail Urgency Badge (Optional):</label>
+                <input type="text" id="autoBadge" class="form-input" placeholder="e.g. IRS WARNING 2026, TOP SECRET, 99% WRONG">
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-large btn-block" id="btnRunAutomate">
+                <i class="fa-solid fa-rocket"></i> Generate Complete YouTube Automation
+              </button>
+            </form>
+
+            <!-- Real-time pipeline progress tracker -->
+            <div class="pipeline-progress" id="pipelineProgress" style="display: none;">
+              <h3><i class="fa-solid fa-gear fa-spin"></i> Generating Assets for US Viewers...</h3>
+              <div class="step-tracker">
+                <div class="step-item" id="step1"><i class="fa-solid fa-circle-notch fa-spin"></i> 1. US Hook & Scriptwriting</div>
+                <div class="step-item" id="step2"><i class="fa-regular fa-circle"></i> 2. High-CTR 1280x720 Thumbnail</div>
+                <div class="step-item" id="step3"><i class="fa-regular fa-circle"></i> 3. FFmpeg Kinetic Video & Audio Rendering</div>
+                <div class="step-item" id="step4"><i class="fa-regular fa-circle"></i> 4. US SEO Metadata & FTC Compliance</div>
+                <div class="step-item" id="step5"><i class="fa-regular fa-circle"></i> 5. Packaging Deliverable Bundle</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Preview Card -->
+          <div class="card" id="outputCard">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-photo-film"></i> Live Production Preview</h2>
+              <span class="badge badge-success" id="outputStatusBadge">Ready</span>
+            </div>
+
+            <div class="preview-stage" id="previewStage">
+              <!-- Video / Thumbnail player container -->
+              <div class="media-preview-box" id="mediaPreviewBox">
+                <video id="renderedVideoPlayer" controls class="video-player" poster="/static/media/thumbnails/thumb_finance_the_2026_us_tax_loophole.png">
+                  <source src="/static/media/videos/vid_shorts_finance_the_2026_us_tax_loop.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+
+              <!-- Quick action buttons -->
+              <div class="output-actions">
+                <a href="/static/media/videos/vid_shorts_finance_the_2026_us_tax_loop.mp4" download class="btn btn-secondary" id="btnDownloadVideo">
+                  <i class="fa-solid fa-download"></i> Download MP4
+                </a>
+                <a href="/static/media/thumbnails/thumb_finance_the_2026_us_tax_loophole.png" download class="btn btn-secondary" id="btnDownloadThumb">
+                  <i class="fa-solid fa-image"></i> Download Thumbnail
+                </a>
+                <a href="#" class="btn btn-primary" id="btnDownloadBundle" style="display:none;">
+                  <i class="fa-solid fa-file-zipper"></i> Download All (.ZIP)
+                </a>
+              </div>
+
+              <!-- Metric Badges -->
+              <div class="metrics-grid">
+                <div class="metric-item">
+                  <div class="metric-val" id="metricRetention">94%</div>
+                  <div class="metric-lbl">US Retention Score</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-val text-emerald" id="metricRPM">$34.50</div>
+                  <div class="metric-lbl">Projected US RPM</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-val text-cyan" id="metricCTR">9.4%</div>
+                  <div class="metric-lbl">Predicted Feed CTR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generated Metadata Teaser -->
+        <div class="card mt-4" id="metadataCard">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-tags"></i> Generated YouTube SEO Package (US Optimized)</h3>
+            <button class="btn btn-sm btn-outline" id="btnCopySEO"><i class="fa-regular fa-copy"></i> Copy Description</button>
+          </div>
+          <div class="metadata-body">
+            <div class="meta-field">
+              <strong>Recommended Title:</strong>
+              <div class="selectable-box" id="dispTitle">The 2026 US Tax Loophole Rich Americans Quietly Use (2026 EXPOSED)</div>
+            </div>
+            <div class="meta-field mt-2">
+              <strong>Tags (Ready for YouTube Studio):</strong>
+              <div class="tags-pill-box" id="dispTags">
+                <span class="tag-pill">us taxes</span><span class="tag-pill">personal finance</span><span class="tag-pill">irs loophole</span><span class="tag-pill">401k</span><span class="tag-pill">investing in us</span><span class="tag-pill">wall street</span>
+              </div>
+            </div>
+            <div class="meta-field mt-2">
+              <strong>Video Description & Chapters:</strong>
+              <textarea id="dispDesc" class="form-textarea" rows="4" readonly>🔥 What 99% of people in the United States don't realize about The 2026 US Tax Loophole...</textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: US TREND RADAR -->
+      <section class="tab-content" id="tab-trends">
+        <div class="section-hero">
+          <h1>US Trend Radar & High-CPM Niches</h1>
+          <p class="subtitle">Curated American search volume, competition scores, and projected RPMs based on YouTube advertiser data in the United States.</p>
+        </div>
+
+        <div class="niches-showcase" id="nichesContainer">
+          <!-- Niches dynamically rendered via JS -->
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-fire text-amber"></i> Trending High-RPM US Topics</h2>
+            <span class="badge badge-accent">Live 2026 Intelligence</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="trendsTable">
+              <thead>
+                <tr>
+                  <th>Topic / Keyword</th>
+                  <th>Niche</th>
+                  <th>Search Volume</th>
+                  <th>Competition</th>
+                  <th>Projected US RPM</th>
+                  <th>Trend Score</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="trendsTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: SCRIPT & RETENTION STUDIO -->
+      <section class="tab-content" id="tab-scripts">
+        <div class="section-hero">
+          <h1>US Script & Retention Engine</h1>
+          <p class="subtitle">Engineer scripts tailored to the 3-second American attention span. Includes pattern interrupt hooks, mid-roll resets, and kinetic subtitle timing.</p>
+        </div>
+
+        <div class="grid-2-col">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-pen-nib"></i> Script Generator</h2>
+            </div>
+            <form id="scriptGenForm">
+              <div class="form-group">
+                <label>Topic:</label>
+                <input type="text" id="scriptTopicInput" class="form-input" value="Why Silicon Valley Billionaires Are Buying Land in Wyoming">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Niche:</label>
+                  <select id="scriptNicheSelect" class="form-select">
+                    <option value="tech_ai">Silicon Valley & AI Tech</option>
+                    <option value="finance">US Personal Finance</option>
+                    <option value="true_crime">American True Crime</option>
+                    <option value="us_real_estate">US Real Estate</option>
+                    <option value="luxury_megaprojects">US Megaprojects</option>
+                    <option value="viral_psychology">Viral Psychology</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Format:</label>
+                  <select id="scriptFormatSelect" class="form-select">
+                    <option value="shorts">Shorts (30-50s Vertical)</option>
+                    <option value="long_form">Long-Form (8-12m Deep Dive)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>US Hook Formula:</label>
+                <select id="scriptHookSelect" class="form-select">
+                  <option value="fomo">The Pattern Interrupt (FOMO Alert)</option>
+                  <option value="whistleblower">The Insider Whistleblower ("What They Hide")</option>
+                  <option value="contrarian">The Contrarian Contradiction ("99% Are Wrong")</option>
+                  <option value="fbi">The FBI / Detective Cliffhanger</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" id="btnGenScript">
+                <i class="fa-solid fa-pen-to-square"></i> Generate Retention Script
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-chart-pie"></i> US Retention Diagnostics</h2>
+            </div>
+            <div class="retention-dashboard">
+              <div class="metrics-grid">
+                <div class="metric-item">
+                  <div class="metric-val text-emerald" id="diagScore">95%</div>
+                  <div class="metric-lbl">Retention Score</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-val text-cyan" id="diagWords">108</div>
+                  <div class="metric-lbl">Word Count</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-val text-amber" id="diagDuration">43s</div>
+                  <div class="metric-lbl">Spoken Duration</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-val" id="diagGrade">Grade 7.2</div>
+                  <div class="metric-lbl">Flesch US Grade</div>
+                </div>
+              </div>
+
+              <div class="script-view-box mt-3">
+                <label><strong>Generated Voiceover Script:</strong></label>
+                <textarea id="scriptOutputText" class="form-textarea" rows="8">Stop scrolling if you live in America and have more than $1,000 in a checking account...</textarea>
+              </div>
+              <div class="mt-2 text-right">
+                <button class="btn btn-secondary" id="btnSpeakScript"><i class="fa-solid fa-volume-high"></i> Listen with US Voice</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: US VOICES & AUDIO STUDIO -->
+      <section class="tab-content" id="tab-audio">
+        <div class="section-hero">
+          <h1>American Voice & Audio Studio ("US Audios")</h1>
+          <p class="subtitle">Audition American voice models, preview speech prosody, and test procedural royalty-free background audio beds engineered for high audience watch-time.</p>
+        </div>
+
+        <div class="grid-2-col">
+          <!-- Voice Models -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-headset"></i> American Voice Profiles</h2>
+            </div>
+            <div class="voices-list" id="voicesContainer">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="voice-test-box mt-3">
+              <label>Audition Phrase:</label>
+              <input type="text" id="auditionPhrase" class="form-input" value="Welcome back to TubePulse. Today we're breaking down the hidden shifts in the US economy.">
+              <div class="voice-controls mt-2">
+                <button class="btn btn-primary" id="btnTestVoice"><i class="fa-solid fa-play"></i> Audition Selected Voice</button>
+                <button class="btn btn-outline" id="btnStopVoice"><i class="fa-solid fa-stop"></i> Stop</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Procedural Audio Beds -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-music"></i> Synthesized Background Music Beds</h2>
+              <span class="badge badge-accent">Royalty-Free Polyphonic</span>
+            </div>
+            <div class="tracks-list">
+              <div class="track-card">
+                <div class="track-info">
+                  <div class="track-title"><i class="fa-solid fa-waveform"></i> Wall Street Tech Pulse (118 BPM)</div>
+                  <div class="track-desc">Driving electronic rhythm with deep sub-bass and arpeggios. Ideal for finance & tech videos.</div>
+                </div>
+                <audio controls class="track-audio" src="/static/media/audio/wall_street_pulse_30s.wav"></audio>
+              </div>
+
+              <div class="track-card mt-2">
+                <div class="track-info">
+                  <div class="track-title"><i class="fa-solid fa-waveform"></i> True Crime Noir (Atmospheric)</div>
+                  <div class="track-desc">Eerie cinematic suspense drone with heartbeat thud. Perfect for FBI and mystery stories.</div>
+                </div>
+                <audio controls class="track-audio" src="/static/media/audio/true_crime_noir_30s.wav"></audio>
+              </div>
+
+              <div class="track-card mt-2">
+                <div class="track-info">
+                  <div class="track-title"><i class="fa-solid fa-waveform"></i> Viral Shorts Energetic (126 BPM)</div>
+                  <div class="track-desc">Punchy four-on-the-floor beat designed to maintain high dopamine levels on mobile.</div>
+                </div>
+                <audio controls class="track-audio" src="/static/media/audio/viral_energetic_30s.wav"></audio>
+              </div>
+
+              <div class="track-card mt-2">
+                <div class="track-info">
+                  <div class="track-title"><i class="fa-solid fa-waveform"></i> Lo-Fi Chill Explainer (85 BPM)</div>
+                  <div class="track-desc">Warm mellow 7th chords for relaxing narrative and housing breakdowns.</div>
+                </div>
+                <audio controls class="track-audio" src="/static/media/audio/lofi_chill_30s.wav"></audio>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: VIDEO & THUMBNAIL STUDIO -->
+      <section class="tab-content" id="tab-video">
+        <div class="section-hero">
+          <h1>Video & Thumbnail Rendering Studio</h1>
+          <p class="subtitle">Custom render engine powered by Pillow and FFmpeg. Test YouTube Home and Search feed simulations before publishing.</p>
+        </div>
+
+        <div class="grid-2-col">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-image"></i> High-CTR Thumbnail Studio (1280x720)</h2>
+            </div>
+            <form id="thumbGenForm">
+              <div class="form-group">
+                <label>Headline Text:</label>
+                <input type="text" id="thumbHeadline" class="form-input" value="US TAX LOOPHOLE 2026">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Niche Theme:</label>
+                  <select id="thumbNiche" class="form-select">
+                    <option value="finance">Finance Emerald & Gold</option>
+                    <option value="tech_ai">Silicon Valley Cyan</option>
+                    <option value="true_crime">True Crime Crimson</option>
+                    <option value="us_real_estate">Real Estate Rose</option>
+                    <option value="luxury_megaprojects">Megaprojects Amber</option>
+                    <option value="viral_psychology">Psychology Purple</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Urgency Badge:</label>
+                  <input type="text" id="thumbBadgeInput" class="form-input" value="IRS WARNING 2026">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" id="btnGenThumbOnly">
+                <i class="fa-solid fa-wand-magic"></i> Render Thumbnail
+              </button>
+            </form>
+
+            <div class="thumb-preview-box mt-3">
+              <img id="thumbPreviewImg" src="/static/media/thumbnails/thumb_finance_the_2026_us_tax_loophole.png" alt="Rendered Thumbnail" class="img-responsive">
+              <div class="ctr-badge-overlay" id="ctrBadgeOverlay">
+                <span id="ctrValText">8.8% CTR</span> • Elite US Feed Tier
+              </div>
+            </div>
+          </div>
+
+          <!-- YouTube Mobile / Desktop Feed Simulator -->
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-brands fa-youtube text-red"></i> YouTube US Feed Simulator</h2>
+              <span class="badge badge-accent">Live Algorithm Preview</span>
+            </div>
+            <div class="yt-feed-simulator">
+              <div class="yt-card">
+                <div class="yt-thumb-container">
+                  <img id="simThumb" src="/static/media/thumbnails/thumb_finance_the_2026_us_tax_loophole.png" class="yt-sim-img">
+                  <span class="yt-time-badge">0:45</span>
+                </div>
+                <div class="yt-details">
+                  <div class="yt-channel-icon"><i class="fa-solid fa-play"></i></div>
+                  <div class="yt-meta">
+                    <div class="yt-title" id="simTitle">The 2026 US Tax Loophole Rich Americans Quietly Use (2026 EXPOSED)</div>
+                    <div class="yt-channel-name">TubePulse US • Verified</div>
+                    <div class="yt-stats">142K views • 4 hours ago • <span class="text-emerald">High US Engagement</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 info-banner">
+                <i class="fa-solid fa-circle-check text-emerald"></i>
+                <div>
+                  <strong>Visual Psychology Verification:</strong>
+                  <p>Bold uppercase title with contrast border increases mobile tap-through rates by up to 28% among US viewers scrolling in dark mode.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: US PEAK SCHEDULER & QUEUE -->
+      <section class="tab-content" id="tab-schedule">
+        <div class="section-hero">
+          <h1>US Peak Publishing Scheduler & Automation Queue</h1>
+          <p class="subtitle">Synchronized with Eastern (EST), Central (CST), Mountain (MST), and Pacific (PST) prime viewing windows for maximum algorithmic boost.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-calendar-check"></i> US Prime Viewing Windows Heatmap</h2>
+          </div>
+          <div class="posting-windows-grid">
+            <div class="window-card">
+              <div class="window-title"><i class="fa-solid fa-mug-saucer"></i> Morning Commute (EST)</div>
+              <div class="window-time">7:00 AM - 9:00 AM EDT</div>
+              <div class="window-desc">Early East Coast rush & mobile news check. Best for Quick Shorts & Market Recaps.</div>
+              <div class="window-badge">78% Traffic Index</div>
+            </div>
+
+            <div class="window-card peak-window">
+              <div class="window-title"><i class="fa-solid fa-burger"></i> US Lunch Peak (National)</div>
+              <div class="window-time">12:00 PM - 2:00 PM EDT</div>
+              <div class="window-desc">12 PM EST / 9 AM PST. Massive midday engagement spike across US corporate & college audiences.</div>
+              <div class="window-badge badge-peak">92% Traffic Index</div>
+            </div>
+
+            <div class="window-card peak-window">
+              <div class="window-title"><i class="fa-solid fa-tv"></i> US Evening Primetime (Highest RPM)</div>
+              <div class="window-time">5:00 PM - 8:30 PM EDT</div>
+              <div class="window-desc">National prime living room & mobile rush. Peak advertiser bids and highest CPM auctions.</div>
+              <div class="window-badge badge-peak">100% Traffic Index</div>
+            </div>
+
+            <div class="window-card">
+              <div class="window-title"><i class="fa-solid fa-couch"></i> Weekend Leisure Binge</div>
+              <div class="window-time">Saturday & Sunday 9 AM - 12 PM EDT</div>
+              <div class="window-desc">Longest average view duration. Highest completion rates for 10-15m deep dives.</div>
+              <div class="window-badge">97% Traffic Index</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automation Queue -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-list-check"></i> Scheduled US Content Pipeline</h2>
+            <div>
+              <button class="btn btn-secondary btn-sm" id="btnBatchGen3"><i class="fa-solid fa-cubes"></i> Batch 3 US Shorts</button>
+              <button class="btn btn-outline btn-sm" id="btnRefreshQueue"><i class="fa-solid fa-rotate"></i> Refresh</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="queueTable">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Niche</th>
+                  <th>Format</th>
+                  <th>Scheduled US Slot</th>
+                  <th>Projected RPM</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="queueTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: US RPM & MONETIZATION CALCULATOR -->
+      <section class="tab-content" id="tab-revenue">
+        <div class="section-hero">
+          <h1>US RPM & Revenue Simulator</h1>
+          <p class="subtitle">Why US audiences matter: Model projected monthly revenue across AdSense, US Brand Sponsorships, and High-Ticket Affiliates.</p>
+        </div>
+
+        <div class="grid-2-col">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-calculator"></i> Projection Parameters</h2>
+            </div>
+            <div class="form-group">
+              <label>Target Monthly Views: <span id="viewsSliderVal" class="text-cyan font-bold">250,000</span></label>
+              <input type="range" id="viewsRange" class="form-range" min="10000" max="2000000" step="10000" value="250000">
+            </div>
+
+            <div class="form-group">
+              <label>Target US Niche:</label>
+              <select id="calcNiche" class="form-select">
+                <option value="finance" selected>💰 US Personal Finance ($34.50 Avg RPM)</option>
+                <option value="us_real_estate">🏡 US Real Estate & Housing ($38.00 Avg RPM)</option>
+                <option value="tech_ai">⚡ Silicon Valley & AI Tech ($28.00 Avg RPM)</option>
+                <option value="luxury_megaprojects">🚀 US Megaprojects ($22.00 Avg RPM)</option>
+                <option value="true_crime">🔥 American True Crime ($19.50 Avg RPM)</option>
+                <option value="viral_psychology">📱 Viral US Shorts ($11.50 Avg RPM)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>US Audience Percentage: <span id="usPctVal" class="text-emerald font-bold">75%</span></label>
+              <input type="range" id="usPctRange" class="form-range" min="30" max="100" step="5" value="75">
+              <div class="text-muted text-xs">Remaining percentage modeled at standard $3.50 global RPM.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-file-invoice-dollar"></i> Projected Revenue Breakdown (USD)</h2>
+            </div>
+            <div class="revenue-summary">
+              <div class="total-revenue-box">
+                <div class="rev-sub">Total Estimated Monthly Revenue</div>
+                <div class="rev-big text-emerald" id="calcTotal">$19,568.75</div>
+                <div class="rev-note">Based on US advertiser CPM benchmarks</div>
+              </div>
+
+              <div class="rev-details-list mt-3">
+                <div class="rev-row">
+                  <span><i class="fa-solid fa-play text-red"></i> YouTube AdSense (Blended RPM: <span id="dispBlendedRPM">$26.75</span>)</span>
+                  <strong id="calcAdsense">$6,687.50</strong>
+                </div>
+                <div class="rev-row">
+                  <span><i class="fa-solid fa-handshake text-cyan"></i> US Brand Deals & Integrations</span>
+                  <strong id="calcSponsor">$3,881.25</strong>
+                </div>
+                <div class="rev-row">
+                  <span><i class="fa-solid fa-link text-amber"></i> High-Ticket US Affiliate Commissions</span>
+                  <strong id="calcAffiliate">$9,000.00</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 8: TELEGRAM BOT BRIDGE -->
+      <section class="tab-content" id="tab-telegram">
+        <div class="section-hero">
+          <h1>Telegram Bot Mobile Command Bridge</h1>
+          <p class="subtitle">Control your entire YouTube automation channel from your smartphone via Telegram commands. Trigger video renders, check scheduled queues, and monitor US analytics on the go.</p>
+        </div>
+
+        <div class="grid-2-col">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-brands fa-telegram text-cyan"></i> Available Bot Commands</h2>
+              <span class="badge badge-success">Bridge Integrated</span>
+            </div>
+            <div class="command-list">
+              <div class="command-card">
+                <code>/generate &lt;topic&gt;</code>
+                <p>Triggers the autonomous 1-click video creation pipeline for the given topic and uploads/queues it.</p>
+              </div>
+              <div class="command-card">
+                <code>/trends</code>
+                <p>Returns the latest top trending US topics with search volume and projected RPMs.</p>
+              </div>
+              <div class="command-card">
+                <code>/status</code>
+                <p>Shows channel automation health, current EST/PST times, and the next optimal US upload slot.</p>
+              </div>
+              <div class="command-card">
+                <code>/schedule</code>
+                <p>Lists all upcoming queued videos scheduled for release in US peak hours.</p>
+              </div>
+              <div class="command-card">
+                <code>/revenue &lt;views&gt;</code>
+                <p>Calculates estimated US revenue across niches for specified view counts.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-mobile-screen"></i> Simulated Telegram Chat Interface</h2>
+            </div>
+            <div class="telegram-mock-chat">
+              <div class="tg-msg tg-user">
+                <div class="tg-sender">You</div>
+                <div class="tg-text">/generate The 2026 US Tax Loophole</div>
+              </div>
+              <div class="tg-msg tg-bot">
+                <div class="tg-sender">TubePulse US Bot <span class="tg-bot-tag">BOT</span></div>
+                <div class="tg-text">
+                  🚀 <b>Automation Job Started!</b><br>
+                  • <b>Topic:</b> The 2026 US Tax Loophole<br>
+                  • <b>Target:</b> US Viewers (Avg RPM: $34.50)<br>
+                  • <b>Script:</b> 94% Retention Score<br>
+                  • <b>Render:</b> 1080x1920 MP4 ready<br>
+                  • <b>Scheduled Slot:</b> Today at 12:00 PM EDT (US Lunch Peak)<br>
+                  <a href="#" class="tg-btn">Download Full Asset Bundle (.ZIP)</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
