@@ -44,6 +44,13 @@ from engine.autopilot_engine import (
     advance_channel_day,
     force_switch_phase,
 )
+from engine.daemon import (
+    start_autopilot_daemon,
+    stop_autopilot_daemon,
+    load_daemon_state,
+    save_daemon_state,
+    run_daemon_step,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("TubePulseUS")
@@ -342,6 +349,29 @@ def api_autopilot_configure():
     save_channel_state(state)
     return jsonify({"status": "success", "state": state})
 
+@app.route("/api/autopilot/daemon", methods=["GET"])
+def api_daemon_status():
+    """Returns background 24/7 daemon state, interval, and next run time."""
+    return jsonify(load_daemon_state())
+
+@app.route("/api/autopilot/daemon/toggle", methods=["POST"])
+def api_daemon_toggle():
+    """Turns the 24/7 autonomous background engine on or off."""
+    data = request.json or {}
+    running = data.get("running")
+    interval = data.get("interval_minutes", 60)
+    if running is False:
+        stop_autopilot_daemon()
+    else:
+        start_autopilot_daemon(interval_minutes=interval)
+    return jsonify(load_daemon_state())
+
+@app.route("/api/autopilot/daemon/trigger-now", methods=["POST"])
+def api_daemon_trigger_now():
+    """Forces an immediate autonomous cycle run through the daemon."""
+    res = run_daemon_step()
+    return jsonify({"status": "success", "result": res, "daemon_state": load_daemon_state()})
+
 @app.route("/api/curiosity/topics", methods=["GET"])
 def api_curiosity_topics():
     """Returns the curiosity vault topics with intrigue scores and formulas."""
@@ -491,6 +521,10 @@ def run_cli():
         print("="*60)
         print("🎉 YouTube Automation Job Completed Successfully!")
         return
+
+    # Start 24/7 background autopilot daemon thread
+    start_autopilot_daemon(interval_minutes=60)
+    print("🤖 24/7 Fully Autonomous Autopilot Daemon Active! (Zero Manual Work Required)")
 
     # Start Flask Web Server
     port = int(os.environ.get("PORT", 5000))

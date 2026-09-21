@@ -81,9 +81,36 @@ async function fetchAutopilot() {
     const res = await fetch("/api/autopilot/status");
     const state = await res.json();
     renderAutopilotState(state);
+
+    // Fetch 24/7 Hands-Free Daemon Status
+    const dRes = await fetch("/api/autopilot/daemon");
+    const dState = await dRes.json();
+    renderDaemonState(dState);
   } catch (err) {
     console.error("Error fetching autopilot status:", err);
   }
+}
+
+function renderDaemonState(d) {
+  if (!d) return;
+  const btn = document.getElementById("btnToggleDaemon");
+  const txt = document.getElementById("daemonBtnText");
+  const dispInt = document.getElementById("dispDaemonInterval");
+  const dispNext = document.getElementById("dispDaemonNextRun");
+  const dispLast = document.getElementById("dispDaemonLastRun");
+
+  if (d.running) {
+    if (btn) btn.className = "btn btn-sm btn-emerald";
+    if (txt) txt.textContent = "Autopilot Active (ON)";
+    if (dispInt) dispInt.textContent = `Every ${d.interval_minutes || 60} Min (Hands-Free)`;
+  } else {
+    if (btn) btn.className = "btn btn-sm btn-secondary";
+    if (txt) txt.textContent = "Autopilot Paused (OFF)";
+    if (dispInt) dispInt.textContent = "Paused";
+  }
+
+  if (dispNext) dispNext.textContent = d.next_run ? d.next_run.replace(" UTC", "") : "Scheduled for Peak Drop";
+  if (dispLast) dispLast.textContent = `Last cycle: ${d.last_run ? d.last_run.replace(" UTC", "") : "Active"} (${d.total_autonomous_runs || 0} drops completed)`;
 }
 
 function renderAutopilotState(state) {
@@ -591,6 +618,53 @@ function setupEventListeners() {
     btnRefreshQueue.addEventListener("click", () => {
       fetchQueue();
       showToast("Publishing queue refreshed!", "info");
+    });
+  }
+
+  // 24/7 Autonomous Autopilot Daemon Buttons
+  const btnToggleDaemon = document.getElementById("btnToggleDaemon");
+  if (btnToggleDaemon) {
+    btnToggleDaemon.addEventListener("click", async () => {
+      try {
+        const curRes = await fetch("/api/autopilot/daemon");
+        const curData = await curRes.json();
+        const nextRunning = !curData.running;
+
+        const res = await fetch("/api/autopilot/daemon/toggle", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({running: nextRunning, interval_minutes: 60})
+        });
+        const dState = await res.json();
+        renderDaemonState(dState);
+        showToast(nextRunning ? "24/7 Autonomous Autopilot is now ACTIVE!" : "Autopilot Daemon paused.", nextRunning ? "success" : "info");
+      } catch (e) {
+        showToast("Error toggling daemon: " + e.message, "error");
+      }
+    });
+  }
+
+  const btnTriggerDaemonNow = document.getElementById("btnTriggerDaemonNow");
+  if (btnTriggerDaemonNow) {
+    btnTriggerDaemonNow.addEventListener("click", async () => {
+      btnTriggerDaemonNow.disabled = true;
+      btnTriggerDaemonNow.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Dropping Autonomous Video...`;
+      showToast("Triggering autonomous background production...", "info");
+
+      try {
+        const res = await fetch("/api/autopilot/daemon/trigger-now", {
+          method: "POST"
+        });
+        const d = await res.json();
+        fetchAutopilot();
+        fetchQueue();
+        showToast("✓ Autonomous cycle completed and scheduled for US peak!", "success");
+      } catch (e) {
+        showToast("Error during autonomous drop: " + e.message, "error");
+      } finally {
+        btnTriggerDaemonNow.disabled = false;
+        btnTriggerDaemonNow.innerHTML = `<i class="fa-solid fa-bolt"></i> Trigger Drop Now`;
+      }
     });
   }
 

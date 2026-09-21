@@ -1,22 +1,29 @@
 {
   "channel_name": "TubePulse US - Curiosity & High-RPM Channel",
   "autopilot_enabled": true,
-  "current_day": 4,
+  "current_day": 5,
   "shorts_only_duration_days": 5,
   "current_phase": "HYBRID_EXPANSION",
-  "audience_subscribers": 592,
-  "audience_views": 55250,
+  "audience_subscribers": 852,
+  "audience_views": 88750,
   "switch_threshold_subs": 500,
-  "total_videos_created": 7,
-  "last_run_time": "2026-09-21 04:16:29 UTC",
+  "total_videos_created": 9,
+  "last_run_time": "2026-09-21 05:06:10 UTC",
   "used_topic_ids": [
     "cur-1",
     "cur-7",
     "cur-6",
     "cur-3",
-    "cur-8"
+    "cur-8",
+    "cur-cf-3",
+    "cur-cf-2"
   ],
   "activity_log": [
+    {
+      "timestamp": "Day 5, 05:30 PM EDT",
+      "type": "AUTO_HYBRID_CREATED",
+      "message": "Autonomous Hybrid Batch Produced: 1 Short ('WTF Is (Actually) Happening In The Stock Market?!') + 1 Long-Form Deep Dive ('Why Everyone Is (Quietly) Ditching the US Dollar'). Audience gained: +260 subs."
+    },
     {
       "timestamp": "Day 4, 12:00 PM EDT",
       "type": "PHASE_TRANSITION",
