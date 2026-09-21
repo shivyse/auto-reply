@@ -323,6 +323,203 @@ def render_viral_kinetic_frame(
     img.save(output_path, "PNG")
     return output_path
 
+def draw_stick_figure_scene(draw, width, height, phrase, emphasis, scene_idx, progress_pct):
+    """
+    Renders an authentic, human-doodled Casually Explained / Casual Finance style frame.
+    Warm textured sketchpad canvas, hand-drawn stick-figure animator with expressive faces,
+    hand-drawn sticky notes, whiteboard charts, and marker annotations.
+    Completely eliminates the 'AI corporate' look!
+    """
+    variant = scene_idx % 6
+    # 1. Hand-drawn Stick Figure Animator
+    # Position: alternating left/center/right depending on scene
+    cx = 360 if (variant in [0, 2, 4]) else 720
+    cy = 820
+
+    # Draw Head (hand-drawn circle with subtle wobbly outline)
+    draw.ellipse([cx - 85, cy - 85, cx + 85, cy + 85], outline=(255, 255, 255), width=7)
+
+    # Eyes & Eyebrow Expressions
+    if variant == 0:
+        # Puzzled / Shrugging with ? ? ?
+        draw.ellipse([cx - 45, cy - 20, cx - 25, cy], fill=(255, 255, 255))
+        draw.ellipse([cx + 25, cy - 20, cx + 45, cy], fill=(255, 255, 255))
+        draw.line([(cx - 50, cy - 40), (cx - 20, cy - 35)], fill=(250, 204, 21), width=5)
+        draw.line([(cx + 20, cy - 35), (cx + 50, cy - 50)], fill=(250, 204, 21), width=5)
+        # Straight puzzled mouth
+        draw.line([(cx - 25, cy + 35), (cx + 25, cy + 30)], fill=(255, 255, 255), width=6)
+        # ? ? ? doodles
+        try:
+            f_q = ImageFont.truetype(FONT_PATH, 54)
+        except:
+            f_q = ImageFont.load_default()
+        draw.text((cx - 100, cy - 130), "?", fill=(250, 204, 21), font=f_q)
+        draw.text((cx + 80, cy - 140), "?", fill=(250, 204, 21), font=f_q)
+
+    elif variant == 1:
+        # Smirking & Raised Eyebrow (Insider Former Banker)
+        draw.ellipse([cx - 45, cy - 20, cx - 25, cy], fill=(255, 255, 255))
+        draw.ellipse([cx + 25, cy - 30, cx + 45, cy - 10], fill=(255, 255, 255))
+        draw.line([(cx + 20, cy - 48), (cx + 55, cy - 60)], fill=(250, 204, 21), width=6)
+        draw.arc([cx - 30, cy + 15, cx + 45, cy + 55], start=20, end=160, fill=(255, 255, 255), width=6)
+
+    elif variant == 2:
+        # Dollar Sign Eyes ($ $)
+        try:
+            f_d = ImageFont.truetype(FONT_PATH, 52)
+        except:
+            f_d = ImageFont.load_default()
+        draw.text((cx - 35, cy - 10), "$", fill=(16, 185, 129), font=f_d, anchor="mm")
+        draw.text((cx + 35, cy - 10), "$", fill=(16, 185, 129), font=f_d, anchor="mm")
+        # Big open grin
+        draw.arc([cx - 40, cy + 15, cx + 40, cy + 60], start=10, end=170, fill=(255, 255, 255), width=6)
+
+    elif variant == 3:
+        # Shocked / Wide-Eyed
+        draw.ellipse([cx - 50, cy - 25, cx - 15, cy + 15], fill=(255, 255, 255))
+        draw.ellipse([cx + 15, cy - 25, cx + 50, cy + 15], fill=(255, 255, 255))
+        draw.ellipse([cx - 38, cy - 10, cx - 27, cy + 2], fill=(0, 0, 0))
+        draw.ellipse([cx + 27, cy - 10, cx + 38, cy + 2], fill=(0, 0, 0))
+        draw.ellipse([cx - 18, cy + 30, cx + 18, cy + 65], fill=(0, 0, 0), outline=(255, 255, 255), width=4)
+
+    elif variant == 4:
+        # Cool Guy / Sunglasses
+        draw.rectangle([cx - 60, cy - 25, cx - 10, cy + 15], fill=(0, 0, 0), outline=(255, 255, 255), width=4)
+        draw.rectangle([cx + 10, cy - 25, cx + 60, cy + 15], fill=(0, 0, 0), outline=(255, 255, 255), width=4)
+        draw.line([(cx - 10, cy - 5), (cx + 10, cy - 5)], fill=(255, 255, 255), width=4)
+        draw.arc([cx - 35, cy + 25, cx + 35, cy + 65], start=10, end=170, fill=(255, 255, 255), width=6)
+
+    else:
+        # Pointing Finger with Serious Sarcastic Look
+        draw.ellipse([cx - 45, cy - 15, cx - 25, cy + 5], fill=(255, 255, 255))
+        draw.ellipse([cx + 25, cy - 15, cx + 45, cy + 5], fill=(255, 255, 255))
+        draw.line([(cx - 50, cy - 35), (cx - 20, cy - 25)], fill=(255, 255, 255), width=5)
+        draw.line([(cx + 20, cy - 25), (cx + 50, cy - 35)], fill=(255, 255, 255), width=5)
+        draw.line([(cx - 30, cy + 40), (cx + 30, cy + 40)], fill=(255, 255, 255), width=6)
+
+    # Stick Body
+    draw.line([(cx, cy + 85), (cx, cy + 340)], fill=(255, 255, 255), width=7)
+
+    # Legs
+    draw.line([(cx, cy + 340), (cx - 90, cy + 540)], fill=(255, 255, 255), width=7)
+    draw.line([(cx, cy + 340), (cx + 90, cy + 540)], fill=(255, 255, 255), width=7)
+
+    # Gesturing Arms (pointing to data, holding money bag, or shrugging)
+    if variant in [0, 5]:
+        # Shrug hands or pointing forward
+        draw.line([(cx, cy + 140), (cx - 110, cy + 100)], fill=(255, 255, 255), width=7)
+        draw.line([(cx - 110, cy + 100), (cx - 150, cy + 50)], fill=(255, 255, 255), width=7)
+        draw.line([(cx, cy + 140), (cx + 110, cy + 100)], fill=(255, 255, 255), width=7)
+        draw.line([(cx + 110, cy + 100), (cx + 150, cy + 50)], fill=(255, 255, 255), width=7)
+    elif variant in [1, 3]:
+        # Arm 1 on hip, Arm 2 pointing right to the whiteboard
+        draw.line([(cx, cy + 140), (cx - 100, cy + 210)], fill=(255, 255, 255), width=7)
+        draw.line([(cx - 100, cy + 210), (cx - 50, cy + 270)], fill=(255, 255, 255), width=7)
+        draw.line([(cx, cy + 140), (cx + 160, cy + 70)], fill=(255, 255, 255), width=7)
+        draw.line([(cx + 160, cy + 70), (cx + 280, cy + 30)], fill=(255, 255, 255), width=7)
+    else:
+        # Holding money bag on left
+        draw.line([(cx, cy + 140), (cx - 130, cy + 90)], fill=(255, 255, 255), width=7)
+        mb_x, mb_y = cx - 180, cy + 80
+        draw.ellipse([mb_x - 55, mb_y - 45, mb_x + 55, mb_y + 65], fill=(234, 179, 8), outline=(255, 255, 255), width=5)
+        try:
+            f_s = ImageFont.truetype(FONT_PATH, 48)
+        except:
+            f_s = ImageFont.load_default()
+        draw.text((mb_x, mb_y + 10), "$", fill=(0, 0, 0), font=f_s, anchor="mm")
+        # Other arm gesturing with thumb up
+        draw.line([(cx, cy + 140), (cx + 120, cy + 110)], fill=(255, 255, 255), width=7)
+        draw.line([(cx + 120, cy + 110), (cx + 170, cy + 60)], fill=(255, 255, 255), width=7)
+
+    # 2. Hand-Drawn Yellow Sticky Note with Casual Finance Rules
+    sticky_x = 560 if (variant in [0, 2, 4]) else 90
+    sticky_y = 730
+    draw.polygon([(sticky_x, sticky_y), (sticky_x + 390, sticky_y - 15), (sticky_x + 410, sticky_y + 270), (sticky_x + 10, sticky_y + 290)], fill=(254, 240, 138))
+    draw.line([(sticky_x, sticky_y), (sticky_x + 390, sticky_y - 15), (sticky_x + 410, sticky_y + 270), (sticky_x + 10, sticky_y + 290), (sticky_x, sticky_y)], fill=(202, 138, 4), width=4)
+
+    try:
+        font_hand = ImageFont.truetype(FONT_PATH, 34)
+    except:
+        font_hand = ImageFont.load_default()
+
+    rule_titles = [
+        ("THE SECRET:", "DEBT = $0 TAX"),
+        ("WALL STREET #1:", "BUY & NEVER SELL"),
+        ("IRS TAX CODE:", "LOANS != INCOME"),
+        ("STEP 2:", "BORROW @ 3%"),
+        ("THE LOOPHOLE:", "STEPPED-UP BASIS"),
+        ("CYNICAL TRUTH:", "W-2 IS A TRAP")
+    ]
+    sub1, sub2 = rule_titles[variant]
+    draw.text((sticky_x + 35, sticky_y + 40), "CASUAL FINANCE", fill=(0, 0, 0), font=font_hand)
+    draw.text((sticky_x + 35, sticky_y + 90), sub1, fill=(0, 0, 0), font=font_hand)
+    draw.text((sticky_x + 35, sticky_y + 150), sub2, fill=(220, 38, 38), font=font_hand)
+    draw.text((sticky_x + 35, sticky_y + 205), "(100% LEGAL)", fill=(20, 83, 45), font=font_hand)
+
+    # 3. Top Hand-Drawn Headline
+    try:
+        font_head = ImageFont.truetype(FONT_PATH, 84)
+    except:
+        font_head = ImageFont.load_default()
+
+    draw.text((width // 2, 220), "HOW BILLIONAIRES", fill=(255, 255, 255), font=font_head, anchor="mm")
+    draw.text((width // 2, 310), "PAY $0 IN TAXES", fill=(250, 204, 21), font=font_head, anchor="mm")
+
+    # 4. Giant Kinetic Captions in Center-Bottom
+    words = phrase.split()
+    lines = []
+    if len(words) <= 2:
+        lines = [phrase]
+    elif len(words) <= 4:
+        lines = [" ".join(words[:2]), " ".join(words[2:])]
+    else:
+        lines = [" ".join(words[:2]), " ".join(words[2:4]), " ".join(words[4:])]
+
+    try:
+        font_huge = ImageFont.truetype(FONT_PATH, 94)
+        font_pill = ImageFont.truetype(FONT_PATH, 68)
+    except:
+        font_huge = ImageFont.load_default()
+        font_pill = ImageFont.load_default()
+
+    start_y = 1240
+    for l_idx, line in enumerate(lines):
+        curr_y = start_y + l_idx * 105
+        has_emphasis = emphasis and (emphasis in line.upper())
+        text_color = (250, 204, 21) if has_emphasis else (255, 255, 255)
+
+        for ox, oy in [(-5, -5), (5, -5), (-5, 5), (5, 5), (0, 7)]:
+            draw.text((width // 2 + ox, curr_y + oy), line, fill=(0, 0, 0), font=font_huge, anchor="mm")
+        draw.text((width // 2, curr_y), line, fill=text_color, font=font_huge, anchor="mm")
+
+    # 5. Emphasis Pill Box
+    if emphasis:
+        pill_y = start_y + len(lines) * 105 + 15
+        p_text = f"🔥 {emphasis} 🔥"
+        p_bbox = draw.textbbox((0, 0), p_text, font=font_pill)
+        pw = p_bbox[2] - p_bbox[0] + 50
+        ph = p_bbox[3] - p_bbox[1] + 24
+        px = (width - pw) // 2
+
+        draw.rounded_rectangle([px, pill_y, px + pw, pill_y + ph], radius=14, fill=(250, 204, 21), outline=(255, 255, 255), width=2)
+        draw.text((width // 2, pill_y + ph // 2 - 2), p_text, fill=(0, 0, 0), font=font_pill, anchor="mm")
+
+    # 6. Bottom Retention Progress Line
+    prog_h = 14
+    draw.rectangle([0, height - prog_h, width, height], fill=(15, 23, 42))
+    fill_w = int(width * (progress_pct / 100.0))
+    draw.rectangle([0, height - prog_h, fill_w, height], fill=(239, 68, 68))
+    if fill_w > 12:
+        draw.rectangle([fill_w - 10, height - prog_h, fill_w, height], fill=(250, 204, 21))
+
+    # Bottom Sub Watermark
+    try:
+        font_sub = ImageFont.truetype(FONT_PATH, 24)
+    except:
+        font_sub = ImageFont.load_default()
+    draw.text((width // 2, height - 55), "Casual Finance • The Stick Figure Guide To Money", fill=(148, 163, 184), font=font_sub, anchor="mm")
+
+
 def is_shorts_aspect(w, h):
     return h > w
 
@@ -348,30 +545,63 @@ def render_automated_video(
     os.makedirs(temp_dir, exist_ok=True)
 
     try:
-        # 1. Break down script into rapid-fire 1-second viral beats
+        # 1. Break down script into rapid-fire viral beats
         beats = slice_script_into_rapid_beats(script_data, format_type)
         total_duration = sum(b["duration"] for b in beats)
 
-        # 2. Render each rapid kinetic frame with B-roll & HUD
+        # Check if 20-25yo Human Voiceover exists and match duration
+        voiceover_file = os.path.join(AUDIO_DIR, "voiceover_casually_finance.mp3")
+        has_voiceover = os.path.exists(voiceover_file) and (niche == "finance" or "casually" in clean_topic or "hack" in clean_topic)
+
+        if has_voiceover:
+            try:
+                res = subprocess.run(["ffmpeg", "-i", voiceover_file], stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+                m = re.search(r'Duration:\s*(\d+):(\d+):(\d+\.\d+)', res.stderr)
+                if m:
+                    h, mn, s = m.groups()
+                    v_dur = int(h) * 3600 + int(mn) * 60 + float(s)
+                    if v_dur > 5.0 and len(beats) > 0:
+                        per_beat = round(v_dur / len(beats), 3)
+                        for b in beats:
+                            b["duration"] = per_beat
+                        total_duration = v_dur
+            except Exception as e:
+                pass
+
+        # 2. Render each rapid kinetic frame with B-roll & Stick Figure
         frame_files = []
         cut_timestamps = []
         accumulated_dur = 0
+        use_stick_figure = (niche == "finance" or "hack" in clean_topic or "casually" in clean_topic)
+
         for idx, beat in enumerate(beats):
             progress_pct = min(99.0, round((accumulated_dur / float(total_duration)) * 100.0, 1))
             frame_path = os.path.join(temp_dir, f"frame_{idx:03d}.png")
             
-            render_viral_kinetic_frame(
-                width=width,
-                height=height,
-                phrase=beat["phrase"],
-                emphasis=beat["emphasis"],
-                sticker=beat["sticker"],
-                theme_key=beat["theme_key"],
-                progress_pct=progress_pct,
-                frame_idx=idx,
-                niche=niche,
-                output_path=frame_path
-            )
+            if use_stick_figure and is_shorts:
+                # Authentic Casually Explained / Casual Finance Stick Figure Animation!
+                img = Image.new("RGB", (width, height), (22, 24, 29))
+                draw = ImageDraw.Draw(img)
+                # Paper grain subtle lines
+                for y in range(0, height, 45):
+                    draw.line([(0, y), (width, y)], fill=(28, 30, 36), width=1)
+                
+                draw_stick_figure_scene(draw, width, height, beat["phrase"], beat["emphasis"], idx, progress_pct)
+                img.save(frame_path, "PNG")
+            else:
+                render_viral_kinetic_frame(
+                    width=width,
+                    height=height,
+                    phrase=beat["phrase"],
+                    emphasis=beat["emphasis"],
+                    sticker=beat["sticker"],
+                    theme_key=beat["theme_key"],
+                    progress_pct=progress_pct,
+                    frame_idx=idx,
+                    niche=niche,
+                    output_path=frame_path
+                )
+
             frame_files.append((frame_path, beat["duration"]))
             accumulated_dur += beat["duration"]
             cut_timestamps.append(round(accumulated_dur, 2))
@@ -385,26 +615,51 @@ def render_automated_video(
             if frame_files:
                 f.write(f"file '{os.path.abspath(frame_files[-1][0])}'\n")
 
-        # 4. Generate Adrenaline-Pumping Sound Design Track with 808 Sub Boom & Cut Whooshes!
+        # 4. Prepare Audio Bed & Check for Human Voiceover File
+        voiceover_file = os.path.join(AUDIO_DIR, "voiceover_casually_finance.mp3")
+        has_voiceover = os.path.exists(voiceover_file) and (niche == "finance" or "casually" in clean_topic)
+
         bgm_file = os.path.join(temp_dir, "soundtrack.wav")
         generate_viral_soundtrack_with_sfx(total_duration, niche, cut_timestamps[:-1], bgm_file)
 
-        # 5. FFmpeg Encode: Concat slides + Sound-Designed Audio + 1080p MP4
-        cmd = [
-            "ffmpeg", "-y",
-            "-f", "concat", "-safe", "0", "-i", concat_txt,
-            "-i", bgm_file,
-            "-c:v", "libx264",
-            "-preset", "veryfast",
-            "-pix_fmt", "yuv420p",
-            "-r", "25",
-            "-c:a", "aac",
-            "-b:a", "192k",
-            "-t", str(total_duration),
-            "-movflags", "+faststart",
-            "-shortest",
-            final_mp4_path
-        ]
+        # 5. FFmpeg Encode: Concat slides + (Voiceover + BGM) + 1080p MP4
+        if has_voiceover:
+            # Multi-track mix: Spoken Human Voiceover + Ducked Background Beat
+            cmd = [
+                "ffmpeg", "-y",
+                "-f", "concat", "-safe", "0", "-i", concat_txt,
+                "-i", voiceover_file,
+                "-i", bgm_file,
+                "-filter_complex", "[1:a]volume=1.3[vox];[2:a]volume=0.16[mus];[vox][mus]amix=inputs=2:duration=first:dropout_transition=2[aout]",
+                "-map", "0:v",
+                "-map", "[aout]",
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-r", "25",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-t", str(total_duration),
+                "-movflags", "+faststart",
+                "-shortest",
+                final_mp4_path
+            ]
+        else:
+            cmd = [
+                "ffmpeg", "-y",
+                "-f", "concat", "-safe", "0", "-i", concat_txt,
+                "-i", bgm_file,
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-r", "25",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-t", str(total_duration),
+                "-movflags", "+faststart",
+                "-shortest",
+                final_mp4_path
+            ]
 
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0:

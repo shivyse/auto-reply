@@ -61,6 +61,35 @@ THEME_COLORS = {
     }
 }
 
+def draw_stick_figure_thumbnail_avatar(char_img, head_center, mood="smirk"):
+    """
+    Draws an authentic, hand-doodled stick-figure animator avatar
+    in the style of Casually Explained / Casual Finance.
+    """
+    c_draw = ImageDraw.Draw(char_img)
+    hx, hy = head_center
+
+    # Head circle
+    c_draw.ellipse([hx - 95, hy - 95, hx + 95, hy + 95], outline=(255, 255, 255, 255), width=8)
+
+    # Eyes & Eyebrow
+    c_draw.ellipse([hx - 55, hy - 25, hx - 30, hy], fill=(255, 255, 255, 255))
+    c_draw.ellipse([hx + 25, hy - 35, hx + 50, hy - 10], fill=(255, 255, 255, 255))
+    # Raised cynical yellow eyebrow
+    c_draw.line([(hx + 20, hy - 55), (hx + 65, hy - 70)], fill=(250, 204, 21, 255), width=7)
+    # Smirking curved mouth
+    c_draw.arc([hx - 35, hy + 15, hx + 45, hy + 65], start=20, end=160, fill=(255, 255, 255, 255), width=7)
+
+    # Body stick
+    c_draw.line([(hx, hy + 95), (hx, hy + 320)], fill=(255, 255, 255, 255), width=8)
+    # Pointing arm to the left (toward the red circle & arrow)
+    c_draw.line([(hx, hy + 150), (hx - 180, hy + 90)], fill=(255, 255, 255, 255), width=8)
+    c_draw.line([(hx - 180, hy + 90), (hx - 320, hy + 40)], fill=(255, 255, 255, 255), width=8)
+    # Other arm on hip
+    c_draw.line([(hx, hy + 150), (hx + 100, hy + 210)], fill=(255, 255, 255, 255), width=8)
+    c_draw.line([(hx + 100, hy + 210), (hx + 50, hy + 270)], fill=(255, 255, 255, 255), width=8)
+
+
 def draw_expressive_youtuber_avatar(char_img, head_center, mood="smirk"):
     """
     Draws a stylized, expressive YouTuber silhouette with wide curious eyes,
@@ -124,10 +153,14 @@ def generate_thumbnail(
     glow = glow.filter(ImageFilter.GaussianBlur(110))
     img.paste(glow, (0, 0), glow)
 
-    # 3. Draw Expressive YouTuber Character with Glowing Neon Rim Light
+    # 3. Draw YouTuber Character (Stick Figure for Casual Finance, Expressive Avatar for others)
     char_img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-    head_pos = (1000, 360)
-    draw_expressive_youtuber_avatar(char_img, head_pos, mood="smirk")
+    head_pos = (1020, 340)
+    use_stick = (niche == "finance" or "casually" in topic.lower() or "hack" in topic.lower())
+    if use_stick:
+        draw_stick_figure_thumbnail_avatar(char_img, head_pos, mood="smirk")
+    else:
+        draw_expressive_youtuber_avatar(char_img, head_pos, mood="smirk")
 
     # Neon rim light filter
     c_rim = char_img.filter(ImageFilter.GaussianBlur(14))
