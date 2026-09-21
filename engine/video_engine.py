@@ -1,8 +1,8 @@
 """
-TubePulse US - Kinetic Video Generator Engine
-Renders high-retention YouTube Shorts (1080x1920) and Long-Form (1920x1080) MP4 videos.
-Composites kinetic subtitle cards, animated bottom retention progress bars, pulsing audio visualizers,
-and procedural background music using Pillow and FFmpeg.
+TubePulse US - Viral Kinetic Video Rendering Engine
+Transforms scripts into fast-paced, high-dopamine YouTube Shorts (1080x1920) and Long-Form (1920x1080) videos.
+Replaces boring corporate presentation slides with rapid-fire 1-second cuts, giant Hormozi-style typography,
+neon highlight pill boxes, camera viewfinder HUDs, pulsing audio visualizers, and cinematic sub-bass hits.
 """
 
 import os
@@ -18,146 +18,269 @@ os.makedirs(VIDEO_DIR, exist_ok=True)
 
 FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
-THEME_COLORS = {
-    "finance": {
-        "primary": (16, 185, 129),    # Emerald
-        "highlight": (250, 204, 21),  # Gold
-        "bg_dark": (10, 15, 29),
-        "badge": "US FINANCE REPORT"
+# High-voltage viral color themes
+VIRAL_THEMES = {
+    "warning": {
+        "bg_dark": (10, 6, 12),
+        "glow_color": (239, 68, 68),       # Crimson Red
+        "badge_bg": (220, 38, 38),
+        "badge_text": (255, 255, 255),
+        "accent": (248, 113, 113),
+        "pill_bg": (239, 68, 68),
+        "pill_text": (255, 255, 255),
+        "highlight_word": (254, 240, 138),  # Bright Yellow
+        "default_sticker": "🚨 DO NOT IGNORE 🚨"
     },
-    "tech_ai": {
-        "primary": (6, 182, 212),     # Cyan
-        "highlight": (56, 189, 248),  # Sky blue
-        "bg_dark": (15, 23, 42),
-        "badge": "SILICON VALLEY INTEL"
+    "money": {
+        "bg_dark": (6, 16, 14),
+        "glow_color": (16, 185, 129),      # Emerald Green
+        "badge_bg": (234, 179, 8),         # Gold
+        "badge_text": (0, 0, 0),
+        "accent": (52, 211, 153),
+        "pill_bg": (234, 179, 8),
+        "pill_text": (0, 0, 0),
+        "highlight_word": (250, 204, 21),  # Gold Yellow
+        "default_sticker": "💰 $15,000 GLITCH 💰"
     },
-    "true_crime": {
-        "primary": (239, 68, 68),     # Crimson
-        "highlight": (252, 165, 165), # Light Red
-        "bg_dark": (18, 18, 18),
-        "badge": "UNSOLVED FBI ARCHIVE"
+    "mystery": {
+        "bg_dark": (8, 14, 26),
+        "glow_color": (6, 182, 212),       # Cyan Neon
+        "badge_bg": (14, 165, 233),
+        "badge_text": (255, 255, 255),
+        "accent": (56, 189, 248),
+        "pill_bg": (6, 182, 212),
+        "pill_text": (0, 0, 0),
+        "highlight_word": (103, 232, 249),
+        "default_sticker": "🕵️ CLASSIFIED FBI 🕵️"
     },
-    "luxury_megaprojects": {
-        "primary": (245, 158, 11),    # Amber
-        "highlight": (253, 224, 71),  # Bright Yellow
-        "bg_dark": (15, 23, 42),
-        "badge": "US MEGAPROJECT CLASSIFIED"
-    },
-    "viral_psychology": {
-        "primary": (168, 85, 247),    # Purple
-        "highlight": (244, 114, 182), # Pink
-        "bg_dark": (20, 10, 35),
-        "badge": "US VIRAL PSYCHOLOGY"
-    },
-    "us_real_estate": {
-        "primary": (244, 63, 94),     # Rose
-        "highlight": (251, 191, 36),  # Gold
-        "bg_dark": (15, 23, 42),
-        "badge": "US HOUSING DATA"
+    "shock": {
+        "bg_dark": (18, 8, 28),
+        "glow_color": (168, 85, 247),      # Electric Purple
+        "badge_bg": (217, 70, 239),
+        "badge_text": (255, 255, 255),
+        "accent": (232, 121, 249),
+        "pill_bg": (236, 72, 153),
+        "pill_text": (255, 255, 255),
+        "highlight_word": (253, 224, 71),
+        "default_sticker": "⚡ SHOCKING TRUTH ⚡"
     }
 }
 
-def render_kinetic_card(
+def slice_script_into_rapid_beats(script_data: dict, format_type: str = "shorts"):
+    """
+    Splits any script into fast-paced 1.0 - 1.5s visual beats (2-4 words per beat).
+    This creates relentless visual pacing identical to top viral YouTube Shorts.
+    """
+    is_shorts = (format_type.lower() == "shorts")
+    raw_text = script_data.get("full_text", "")
+    
+    # Clean and split into individual sentences
+    sentences = [s.strip() for s in re.split(r'[.!?]+', raw_text) if s.strip()]
+    if not sentences:
+        sentences = ["Stop scrolling and check your dollar bills right now.", "A massive glitch was discovered by collectors."]
+
+    beats = []
+    stickers = [
+        "🚨 DO NOT IGNORE 🚨",
+        "⚠️ SECRET LOOPHOLE ⚠️",
+        "💵 $15,000 BOUNTY 💵",
+        "🔍 LOOK CLOSELY 🔍",
+        "🕵️ CLASSIFIED FILE 🕵️",
+        "⚡ 99% NEVER KNEW ⚡",
+        "👀 WATCH TILL END 👀",
+        "🔥 VIRAL REVEAL 🔥"
+    ]
+
+    theme_keys = ["warning", "money", "mystery", "shock"]
+
+    # Break each sentence into 2-4 word bursts
+    beat_idx = 0
+    for s_idx, sentence in enumerate(sentences):
+        words = sentence.split()
+        chunk_size = 3 if is_shorts else 4
+        
+        for i in range(0, len(words), chunk_size):
+            chunk = words[i:i + chunk_size]
+            phrase = " ".join(chunk).upper()
+            
+            # Find emphasis word (numbers, dollar amounts, power words)
+            emphasis = ""
+            for w in chunk:
+                clean_w = re.sub(r'[^a-zA-Z0-9$]', '', w).upper()
+                if any(c in clean_w for c in ["$", "%", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) or \
+                   clean_w in ["SECRET", "NEVER", "STOP", "GLITCH", "BANNED", "FATAL", "VAULT", "DOOR", "STAR", "CASH", "TRUTH", "FBI", "TREASURY"]:
+                    emphasis = clean_w
+                    break
+
+            theme = theme_keys[beat_idx % len(theme_keys)]
+            sticker = stickers[beat_idx % len(stickers)]
+
+            beats.append({
+                "phrase": phrase,
+                "emphasis": emphasis,
+                "theme_key": theme,
+                "sticker": sticker,
+                "duration": 1.2 if is_shorts else 1.8
+            })
+            beat_idx += 1
+
+    # Keep shorts between 14 to 22 beats (~18-28 seconds), long-form up to 30 beats for preview
+    max_beats = 20 if is_shorts else 28
+    return beats[:max_beats]
+
+def render_viral_kinetic_frame(
     width: int,
     height: int,
-    headline: str,
-    body_text: str,
-    badge_label: str,
-    niche: str,
+    phrase: str,
+    emphasis: str,
+    sticker: str,
+    theme_key: str,
     progress_pct: float,
-    beat_step: int,
+    frame_idx: int,
     output_path: str
 ):
-    """Renders a single high-impact kinetic typography card frame."""
-    theme = THEME_COLORS.get(niche, THEME_COLORS["finance"])
+    """
+    Renders a single high-voltage kinetic typography frame.
+    No boring corporate cards! Full-screen energetic contrast with camera HUD, neon radial glow,
+    giant center text with thick black outline, highlight pill boxes, and animated audio equalizer.
+    """
+    theme = VIRAL_THEMES.get(theme_key, VIRAL_THEMES["warning"])
     img = Image.new("RGB", (width, height), theme["bg_dark"])
     draw = ImageDraw.Draw(img)
 
-    # 1. Subtle Radial Ambient Glow
+    # 1. Energetic Radial Glow in center
     glow = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     g_draw = ImageDraw.Draw(glow)
-    center_y = int(height * 0.45)
+    center_y = int(height * 0.48)
+    radius = 520
     g_draw.ellipse(
-        [width//2 - 400, center_y - 400, width//2 + 400, center_y + 400],
-        fill=(*theme["primary"], 35)
+        [width//2 - radius, center_y - radius, width//2 + radius, center_y + radius],
+        fill=(*theme["glow_color"], 55)
     )
-    glow = glow.filter(ImageFilter.GaussianBlur(100))
+    glow = glow.filter(ImageFilter.GaussianBlur(130))
     img.paste(glow, (0, 0), glow)
     draw = ImageDraw.Draw(img)
 
     # Fonts
     try:
-        font_badge = ImageFont.truetype(FONT_PATH, 28 if width < 1200 else 32)
-        font_head = ImageFont.truetype(FONT_PATH, 54 if width < 1200 else 64)
-        font_body = ImageFont.truetype(FONT_PATH, 38 if width < 1200 else 46)
-        font_meta = ImageFont.truetype(FONT_PATH, 24 if width < 1200 else 28)
+        font_huge = ImageFont.truetype(FONT_PATH, 105 if width < 1200 else 90)
+        font_pill = ImageFont.truetype(FONT_PATH, 70 if width < 1200 else 60)
+        font_badge = ImageFont.truetype(FONT_PATH, 34 if width < 1200 else 30)
+        font_hud = ImageFont.truetype(FONT_PATH, 24 if width < 1200 else 22)
     except:
+        font_huge = ImageFont.load_default()
+        font_pill = ImageFont.load_default()
         font_badge = ImageFont.load_default()
-        font_head = ImageFont.load_default()
-        font_body = ImageFont.load_default()
-        font_meta = ImageFont.load_default()
+        font_hud = ImageFont.load_default()
 
-    # 2. Header Badge
-    badge_y = 100 if height > 1500 else 60
-    draw.rounded_rectangle([70, badge_y, 70 + 380, badge_y + 55], radius=10, fill=(*theme["primary"], 220))
-    draw.text((85, badge_y + 12), f"● {badge_label}", fill=(255, 255, 255), font=font_badge)
+    # 2. Camera Viewfinder HUD Brackets (gives an authentic leaked/documentary feel)
+    hud_color = (148, 163, 184, 180)
+    bracket_len = 50
+    margin = 50
+    # Top-Left Bracket
+    draw.line([(margin, margin), (margin + bracket_len, margin)], fill=hud_color, width=4)
+    draw.line([(margin, margin), (margin, margin + bracket_len)], fill=hud_color, width=4)
+    # Top-Right Bracket
+    draw.line([(width - margin, margin), (width - margin - bracket_len, margin)], fill=hud_color, width=4)
+    draw.line([(width - margin, margin), (width - margin, margin + bracket_len)], fill=hud_color, width=4)
+    # Bottom-Left Bracket
+    draw.line([(margin, height - margin), (margin + bracket_len, height - margin)], fill=hud_color, width=4)
+    draw.line([(margin, height - margin), (margin, height - margin - bracket_len)], fill=hud_color, width=4)
+    # Bottom-Right Bracket
+    draw.line([(width - margin, height - margin), (width - margin - bracket_len, height - margin)], fill=hud_color, width=4)
+    draw.line([(width - margin, height - margin), (width - margin, height - margin - bracket_len)], fill=hud_color, width=4)
 
-    # 3. Sound Waveform Visualizer Simulation (Top right)
-    wave_x = width - 260
-    wave_y = badge_y + 10
-    bar_heights = [18, 35, 22, 45, 30, 48, 26, 40, 20]
-    for i, h in enumerate(bar_heights):
-        bx = wave_x + i * 18
-        draw.rectangle([bx, wave_y + (50 - h) // 2, bx + 10, wave_y + 50], fill=theme["highlight"])
+    # Top HUD Status
+    draw.text((margin + 10, margin + 8), "● REC [4K 60FPS]", fill=(239, 68, 68), font=font_hud)
+    draw.text((width - margin - 220, margin + 8), f"US FEED #{frame_idx+1:02d}", fill=(203, 213, 225), font=font_hud)
 
-    # 4. Kinetic Headline Box
-    head_y = badge_y + 90
-    words = headline.upper().split()
-    line1 = " ".join(words[:4])
-    line2 = " ".join(words[4:8]) if len(words) > 4 else ""
+    # 3. Top Urgency / Curiosity Sticker (High Contrast Pill)
+    badge_y = 220 if height > 1500 else 90
+    badge_bbox = draw.textbbox((0, 0), sticker, font=font_badge)
+    bw = badge_bbox[2] - badge_bbox[0] + 48
+    bh = badge_bbox[3] - badge_bbox[1] + 24
+    bx = (width - bw) // 2
 
-    draw.text((70, head_y), line1, fill=(255, 255, 255), font=font_head)
-    if line2:
-        draw.text((70, head_y + 70), line2, fill=theme["highlight"], font=font_head)
+    # Drop shadow on badge
+    draw.rounded_rectangle([bx + 4, badge_y + 4, bx + bw + 4, badge_y + bh + 4], radius=12, fill=(0, 0, 0, 160))
+    draw.rounded_rectangle([bx, badge_y, bx + bw, badge_y + bh], radius=12, fill=theme["badge_bg"], outline=(255, 255, 255), width=2)
+    draw.text((width // 2, badge_y + bh // 2), sticker, fill=theme["badge_text"], font=font_badge, anchor="mm")
 
-    # 5. Body Text Card with Viral Caption Highlighting
-    card_top = head_y + (160 if line2 else 90)
-    card_bottom = height - (240 if height > 1500 else 160)
-    draw.rounded_rectangle([60, card_top, width - 60, card_bottom], radius=24, fill=(15, 23, 42, 230), outline=(51, 65, 85), width=3)
+    # 4. GIANT Center Kinetic Typography (Hormozi / Viral Pop Style)
+    words = phrase.split()
+    lines = []
+    if len(words) <= 2:
+        lines = [phrase]
+    elif len(words) <= 4:
+        lines = [" ".join(words[:2]), " ".join(words[2:])]
+    else:
+        lines = [" ".join(words[:2]), " ".join(words[2:4]), " ".join(words[4:])]
 
-    # Wrap body text into lines
-    body_words = body_text.split()
-    body_lines = []
-    curr = []
-    for w in body_words:
-        curr.append(w)
-        if len(" ".join(curr)) > (26 if width < 1200 else 45):
-            body_lines.append(" ".join(curr))
-            curr = []
-    if curr:
-        body_lines.append(" ".join(curr))
+    text_center_y = int(height * 0.48)
+    line_spacing = 115 if width < 1200 else 95
+    start_y = text_center_y - (len(lines) * line_spacing) // 2
 
-    body_y = card_top + 60
-    for idx, bl in enumerate(body_lines[:7]):
-        # Highlight trigger words (e.g. $, numbers, critical keywords)
-        text_fill = (255, 255, 255)
-        if any(kw in bl.lower() for kw in ["$", "%", "tax", "secret", "fbi", "loophole", "million", "never", "trillion"]):
-            text_fill = theme["highlight"]
+    for l_idx, line in enumerate(lines):
+        curr_y = start_y + l_idx * line_spacing
+        
+        # Check if line contains emphasis word
+        has_emphasis = emphasis and (emphasis in line.upper())
+        text_color = theme["highlight_word"] if (l_idx == 1 or has_emphasis) else (255, 255, 255)
 
-        draw.text((100, body_y + idx * 60), bl, fill=text_fill, font=font_body)
+        # Draw thick black outline (stroke_width=8) so text pops off ANY background
+        for ox, oy in [(-5, -5), (5, -5), (-5, 5), (5, 5), (0, 7), (0, 9)]:
+            draw.text((width // 2 + ox, curr_y + oy), line, fill=(0, 0, 0), font=font_huge, anchor="mm")
+        
+        draw.text((width // 2, curr_y), line, fill=text_color, font=font_huge, anchor="mm")
 
-    # 6. Bottom Retention Progress Bar (Proven to keep US mobile viewers hooked)
-    bar_y = height - 20
-    draw.rectangle([0, bar_y, width, height], fill=(30, 41, 59))
-    prog_w = int(width * (progress_pct / 100.0))
-    draw.rectangle([0, bar_y, prog_w, height], fill=theme["highlight"])
+    # 5. Highlight Pill Box (If an emphasis word exists, render a bright yellow pop card under the text)
+    if emphasis:
+        pill_y = start_y + len(lines) * line_spacing + 20
+        pill_text = f"🔥 {emphasis} 🔥"
+        p_bbox = draw.textbbox((0, 0), pill_text, font=font_pill)
+        pw = p_bbox[2] - p_bbox[0] + 50
+        ph = p_bbox[3] - p_bbox[1] + 28
+        px = (width - pw) // 2
+        
+        # Pill shadow & box
+        draw.rounded_rectangle([px + 5, pill_y + 5, px + pw + 5, pill_y + ph + 5], radius=16, fill=(0, 0, 0, 180))
+        draw.rounded_rectangle([px, pill_y, px + pw, pill_y + ph], radius=16, fill=(250, 204, 21))
+        draw.text((width // 2, pill_y + ph // 2 - 2), pill_text, fill=(0, 0, 0), font=font_pill, anchor="mm")
 
-    # 7. Channel / Watermark Footer
-    footer_y = card_bottom + 40
-    draw.text((70, footer_y), "TubePulse US • Auto-Engineered for American Audiences", fill=(148, 163, 184), font=font_meta)
+    # 6. Pulsing Audio Visualizer Waveform Bars (animated rhythm at bottom)
+    wave_y = height - (260 if height > 1500 else 140)
+    bar_count = 21
+    bar_width = 14 if width < 1200 else 18
+    gap = 8
+    total_w = bar_count * (bar_width + gap)
+    start_x = (width - total_w) // 2
+
+    for b in range(bar_count):
+        # Sine-based dynamic bar height simulating audio spectrum
+        osc = math.sin((b * 0.45) + (frame_idx * 0.8)) * 0.5 + 0.5
+        h_val = int(18 + osc * 65)
+        bx = start_x + b * (bar_width + gap)
+        draw.rounded_rectangle([bx, wave_y - h_val, bx + bar_width, wave_y + 10], radius=4, fill=theme["accent"])
+
+    # 7. Animated Bottom Retention Progress Bar (Proven to keep viewers watching to 100%)
+    prog_h = 16
+    draw.rectangle([0, height - prog_h, width, height], fill=(15, 23, 42))
+    fill_w = int(width * (progress_pct / 100.0))
+    # Red & gold gradient progress fill
+    draw.rectangle([0, height - prog_h, fill_w, height], fill=(239, 68, 68))
+    if fill_w > 10:
+        draw.rectangle([fill_w - 8, height - prog_h, fill_w, height], fill=(250, 204, 21))
+
+    # 8. High-Energy Call To Action Prompt
+    cta_y = wave_y + 60
+    cta_text = "👇 TAP SUBSCRIBE TO UNLOCK PART 2" if is_shorts_aspect(width, height) else "🔥 TubePulse US • Daily High-RPM Curiosity Files"
+    draw.text((width // 2, cta_y), cta_text, fill=(203, 213, 225), font=font_hud, anchor="mm")
 
     img.save(output_path, "PNG")
     return output_path
+
+def is_shorts_aspect(w, h):
+    return h > w
 
 def render_automated_video(
     script_data: dict,
@@ -166,7 +289,7 @@ def render_automated_video(
     output_filename: str = None
 ) -> dict:
     """
-    Renders a complete MP4 video from script data with audio synchronization and kinetic visuals.
+    Renders a viral kinetic video from script data with rapid-fire cuts and energetic audio.
     """
     is_shorts = (format_type.lower() == "shorts")
     width, height = (1080, 1920) if is_shorts else (1920, 1080)
@@ -178,58 +301,34 @@ def render_automated_video(
     final_mp4_path = os.path.join(VIDEO_DIR, output_filename)
 
     # Temp workspace for frames
-    temp_dir = os.path.join(VIDEO_DIR, f"temp_{clean_topic}")
+    temp_dir = os.path.join(VIDEO_DIR, f"temp_{clean_topic}_{int(math.floor(math.sin(1)*1000))}")
     os.makedirs(temp_dir, exist_ok=True)
 
     try:
-        # 1. Determine segments/beats to render
-        beats = []
-        if is_shorts:
-            raw_beats = script_data.get("beats", [])
-            if raw_beats:
-                for b in raw_beats:
-                    beats.append({
-                        "label": b[1],
-                        "text": b[2],
-                        "duration": max(3, len(b[2].split()) // 3)
-                    })
-            else:
-                beats = [
-                    {"label": "HOOK ALERT", "text": script_data.get("hook", "Important Update for US Viewers"), "duration": 4},
-                    {"label": "THE SHIFT", "text": script_data.get("full_text", "")[:120], "duration": 6},
-                    {"label": "TAKE ACTION", "text": "Subscribe to stay ahead of the curve.", "duration": 4}
-                ]
-        else:
-            sections = script_data.get("sections", [])
-            for s in sections[:4]:
-                beats.append({
-                    "label": s.get("title", "KEY INSIGHT"),
-                    "text": s.get("voiceover", "")[:140] + "...",
-                    "duration": 5
-                })
-
+        # 1. Break down script into rapid-fire 1-second viral beats
+        beats = slice_script_into_rapid_beats(script_data, format_type)
         total_duration = sum(b["duration"] for b in beats)
-        theme = THEME_COLORS.get(niche, THEME_COLORS["finance"])
 
-        # 2. Render each beat's frame image
+        # 2. Render each rapid kinetic frame
         frame_files = []
         accumulated_dur = 0
-        for i, b in enumerate(beats):
-            progress_pct = min(98.0, round((accumulated_dur / float(total_duration)) * 100.0, 1))
-            frame_path = os.path.join(temp_dir, f"slide_{i:02d}.png")
-            render_kinetic_card(
+        for idx, beat in enumerate(beats):
+            progress_pct = min(99.0, round((accumulated_dur / float(total_duration)) * 100.0, 1))
+            frame_path = os.path.join(temp_dir, f"frame_{idx:03d}.png")
+            
+            render_viral_kinetic_frame(
                 width=width,
                 height=height,
-                headline=b["label"],
-                body_text=b["text"],
-                badge_label=theme["badge"],
-                niche=niche,
+                phrase=beat["phrase"],
+                emphasis=beat["emphasis"],
+                sticker=beat["sticker"],
+                theme_key=beat["theme_key"],
                 progress_pct=progress_pct,
-                beat_step=i + 1,
+                frame_idx=idx,
                 output_path=frame_path
             )
-            frame_files.append((frame_path, b["duration"]))
-            accumulated_dur += b["duration"]
+            frame_files.append((frame_path, beat["duration"]))
+            accumulated_dur += beat["duration"]
 
         # 3. Create FFmpeg concat demuxer file for smooth timed slides
         concat_txt = os.path.join(temp_dir, "input.txt")
@@ -237,12 +336,11 @@ def render_automated_video(
             for fpath, dur in frame_files:
                 f.write(f"file '{os.path.abspath(fpath)}'\n")
                 f.write(f"duration {dur}\n")
-            # Repeat last file to satisfy concat demuxer spec
             if frame_files:
                 f.write(f"file '{os.path.abspath(frame_files[-1][0])}'\n")
 
-        # 4. Prepare Audio Bed
-        bgm_type = "wall_street_pulse" if niche in ["finance", "tech_ai"] else ("true_crime_noir" if niche == "true_crime" else "viral_energetic")
+        # 4. Prepare Audio Bed (High energy viral pulse with sub-bass)
+        bgm_type = "viral_energetic" if is_shorts else ("wall_street_pulse" if niche in ["finance", "tech_ai"] else "true_crime_noir")
         bgm_file = os.path.join(AUDIO_DIR, f"{bgm_type}_30s.wav")
         if not os.path.exists(bgm_file):
             bgm_file = synthesize_polyphonic_track(bgm_type, max(30.0, float(total_duration)))
@@ -275,7 +373,8 @@ def render_automated_video(
             "video_path": final_mp4_path,
             "filename": output_filename,
             "url": f"/static/media/videos/{output_filename}",
-            "duration": total_duration,
+            "duration": round(total_duration, 1),
+            "cuts_count": len(beats),
             "resolution": f"{width}x{height}",
             "format": "Shorts (9:16)" if is_shorts else "Long-Form (16:9)",
             "size_mb": file_size_mb,
@@ -283,6 +382,5 @@ def render_automated_video(
         }
 
     finally:
-        # Cleanup temp frames
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir, ignore_errors=True)
