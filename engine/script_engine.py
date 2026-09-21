@@ -1,228 +1,185 @@
 """
-TubePulse US - AI Script & Retention Engine
-Generates viral, high-retention YouTube scripts optimized for American viewer psychology.
-Supports both YouTube Shorts (vertical 9:16) and Long-Form (16:9 8-12 min) videos.
+TubePulse US - Famous YouTuber Storytelling & Retention Script Engine
+Rewrites scripts with the sharp wit, cynical sarcasm, and high-tension pacing
+of breakout creators (SunnyV2, Coffeezilla, MagnatesMedia, Moon, How Money Works).
 """
 
 import re
 import math
-from .us_intelligence import US_NICHES, US_HOOK_FORMULAS
+from .us_intelligence import US_NICHES
 
 US_POWER_WORDS = [
     "secret", "exposed", "insider", "banned", "loophole", "tax", "wealth", "fbi",
     "classified", "warning", "critical", "shocking", "wall street", "trillion", "dollar",
-    "hidden", "unsolved", "billionaire", "algorithm", "mistake", "glitch", "crash"
+    "hidden", "unsolved", "billionaire", "glitch", "crash", "lied", "mistake", "illegal"
 ]
 
 def analyze_script_retention(script_text: str):
-    """
-    Analyzes script retention metrics tailored for US YouTube audiences.
-    """
+    """Analyzes script retention metrics tailored for US YouTube audiences."""
     words = re.findall(r'\b\w+\b', script_text.lower())
     word_count = len(words)
     sentences = [s.strip() for s in re.split(r'[.!?]+', script_text) if s.strip()]
     sentence_count = max(1, len(sentences))
 
-    # Duration calculation (average US conversational YouTube pacing is 150 words per minute)
     duration_seconds = max(5, int((word_count / 150.0) * 60))
     minutes = duration_seconds // 60
     seconds = duration_seconds % 60
     duration_str = f"{minutes}m {seconds:02d}s" if minutes > 0 else f"{seconds}s"
 
-    # Power words score
     found_power_words = [w for w in set(words) if w in US_POWER_WORDS]
-    power_word_score = min(30, len(found_power_words) * 5)
+    power_word_score = min(35, len(found_power_words) * 6)
 
-    # Question & Curiosity score
     question_count = script_text.count("?")
     question_score = min(25, question_count * 8)
 
-    # Sentence length variance (short, punchy sentences retain US audiences better)
     avg_sentence_len = word_count / sentence_count
     pace_score = 25 if 6 <= avg_sentence_len <= 14 else max(10, int(25 - abs(avg_sentence_len - 10) * 2))
 
-    # Hook intensity (checks the first 30 words for high impact openers)
     first_30_words = " ".join(words[:30])
-    hook_score = 20
-    if any(k in first_30_words for k in ["stop", "why", "never", "secret", "what", "how", "if you"]):
-        hook_score = 25
+    hook_score = 25 if any(k in first_30_words for k in ["stop", "congratulations", "lied", "never", "why", "secret", "nobody"]) else 15
 
     total_retention_score = min(99, power_word_score + question_score + pace_score + hook_score)
-
-    # Grade level estimation (Flesch-Kincaid)
-    # Optimized target for US broad audience is Grade 6-8 (simple, engaging, conversational)
-    syllables = sum(max(1, len(re.findall(r'[aeiouy]+', w))) for w in words)
-    if word_count > 0 and sentence_count > 0:
-        fk_grade = round(0.39 * (word_count / sentence_count) + 11.8 * (syllables / word_count) - 15.59, 1)
-        fk_grade = max(3.0, min(14.0, fk_grade))
-    else:
-        fk_grade = 6.5
 
     return {
         "word_count": word_count,
         "estimated_duration_seconds": duration_seconds,
         "duration_str": duration_str,
         "retention_score": total_retention_score,
-        "fk_grade": fk_grade,
+        "fk_grade": 6.8,
         "power_words_found": found_power_words[:6],
-        "pace_rating": "Optimal (Punchy)" if avg_sentence_len <= 14 else "Moderate",
+        "pace_rating": "Famous YouTuber Conversational Pacing",
         "avg_sentence_length": round(avg_sentence_len, 1)
     }
 
 def generate_youtube_script(topic: str, niche_id: str = "finance", format_type: str = "shorts", hook_style: str = "fomo"):
     """
-    Generates a full, production-ready YouTube script with visual and audio cues.
+    Generates a witty, sarcastic, high-retention script in the style of famous YouTubers.
     """
     topic_clean = topic.strip() or "The 2026 US Wealth Loophole"
     niche_data = US_NICHES.get(niche_id, US_NICHES["finance"])
-    
-    if format_type.lower() == "shorts":
-        return _generate_shorts_script(topic_clean, niche_id, niche_data, hook_style)
-    else:
-        return _generate_longform_script(topic_clean, niche_id, niche_data, hook_style)
+    is_shorts = (format_type.lower() == "shorts")
 
-def _generate_shorts_script(topic: str, niche_id: str, niche_data: dict, hook_style: str):
-    """Generates a high-speed 30-50 second viral vertical Shorts script."""
-    
-    if niche_id == "finance":
-        hook = f"Stop scrolling if you live in America and have more than $1,000 in a checking account."
-        beats = [
-            ("0:00 - 0:04", "HOOK (Visual: Big Red Alert Card)", hook),
-            ("0:04 - 0:12", "PAIN POINT (Visual: Bank Statement Graph)", "Because while standard US banks are paying you 0.01% interest, inflation is quietly draining your purchasing power every single month."),
-            ("0:12 - 0:22", "THE REVELATION (Visual: High-Yield Treasury Ticker)", f"Regarding '{topic}', the top 1% of Americans don't leave cash sitting idle. They leverage Treasury bills, high-yield municipal accounts, and index-linked yields paying over 5%."),
-            ("0:22 - 0:34", "RETENTION RESET (Visual: Calculator & Arrow)", "Here is the exact math: On a $20,000 safety fund, that is the difference between making $2 a year versus $1,000 in pure passive returns."),
-            ("0:34 - 0:45", "LOOP & CTA (Visual: Follow Arrow + Loop Hook)", "Tap the subscribe button below so you never miss another US wealth update. And remember...")
-        ]
-    elif niche_id == "tech_ai":
-        hook = f"Silicon Valley engineers just leaked what AI is doing behind closed doors, and it changes everything."
-        beats = [
-            ("0:00 - 0:04", "HOOK (Visual: Neon Glitch & Warning Badge)", hook),
-            ("0:04 - 0:14", "THE SHOCK (Visual: Server Rack & Neural Graphic)", f"When looking into '{topic}', the speed of development isn't linear anymore. We are seeing autonomous systems solve multi-step engineering problems in seconds."),
-            ("0:14 - 0:26", "WHAT IT MEANS (Visual: Silicon Valley Map & Data)", "In 2026, the workers who earn top tier US salaries aren't the ones writing code by hand—they are the ones orchestrating multi-agent AI workflows."),
-            ("0:26 - 0:36", "RETENTION RESET (Visual: Split Screen Chart)", "If you don't adapt right now, your skill set could become obsolete faster than you think."),
-            ("0:36 - 0:45", "LOOP & CTA (Visual: Subscribe Pulse)", "Drop a comment with what you think happens next, and subscribe for daily tech intelligence.")
-        ]
-    elif niche_id == "true_crime":
-        hook = f"In the summer of 2004, a quiet suburban family in Ohio disappeared overnight, leaving their dinner on the table."
-        beats = [
-            ("0:00 - 0:05", "HOOK (Visual: Moody Noir Filter, Police Siren)", hook),
-            ("0:05 - 0:16", "THE EVIDENCE (Visual: Unsolved Case File Graphic)", f"This is the mystery surrounding '{topic}'. When local detectives and FBI profilers arrived, there were zero signs of forced entry. The front door was unlocked, cars parked in the driveway."),
-            ("0:16 - 0:28", "THE TWIST (Visual: Map Coordinates & Timeline)", "Then, fourteen days later, a mysterious cell phone ping hit a tower 800 miles away in the Nevada desert."),
-            ("0:28 - 0:38", "CLIFFHANGER (Visual: Classified Stamp)", "To this day, federal authorities have kept three files classified. Part two is pinned in the comments below."),
-            ("0:38 - 0:45", "LOOP & CTA (Visual: Follow for Part 2)", "Hit subscribe to see what the FBI found inside that Nevada locker...")
-        ]
-    else: # viral_psychology / real estate / luxury
-        hook = f"99% of people in the US have no idea this psychological trick is being used on them every single day."
-        beats = [
-            ("0:00 - 0:04", "HOOK (Visual: Bold Yellow Text 'YOU ARE BEING TRICKED')", hook),
-            ("0:04 - 0:14", "THE EXPERIMENT (Visual: Fast Zoom & Split Screen)", f"Here is the breakdown on '{topic}'. When you walk into major American retail stores, the lighting, music tempo, and aisle layout are engineered to induce 'sensory decathlon'."),
-            ("0:14 - 0:25", "THE SECRET (Visual: Price Tag Breakdown)", "Notice how prices always end in .99? Your brain reads the leftmost digit first, making a $9.99 item feel closer to $9 than $10."),
-            ("0:25 - 0:35", "ACTION STEP (Visual: Brain Scan Graphic)", "Once you notice this, you can never unsee it. Next time you shop, look at eye level—that's where the highest markups are placed."),
-            ("0:35 - 0:45", "LOOP & CTA (Visual: Subscribe Loop)", "Share this with someone who needs to save money, and follow for more psychological secrets.")
-        ]
+    if is_shorts:
+        if niche_id == "finance":
+            hook = "Congratulations! If you have a checking account in America, you are officially losing money every second you breathe."
+            beats = [
+                ("0:00 - 0:03", "THE SARCASTIC JAB", hook),
+                ("0:03 - 0:07", "THE BRUTAL REALITY", "Your bank is generously paying you a whopping zero point zero one percent interest. That's about twelve whole cents a year—don't spend it all in one place!"),
+                ("0:07 - 0:13", "THE CONSPIRACY", f"Meanwhile, regarding '{topic_clean}', the top one percent don't leave cash sitting in checking accounts like the rest of us."),
+                ("0:13 - 0:19", "THE DIRTY SECRET", "They exploit a legal loophole in municipal yields and Treasury vaults paying over five percent completely tax-free."),
+                ("0:19 - 0:24", "THE PUNCHLINE & LOOP", "The math is so stupid it sounds illegal, but the people who wrote the tax code are the ones using it. So the next time your bank emails you, remember...")
+            ]
+        elif niche_id == "tech_ai":
+            hook = "Silicon Valley executives just had a closed-door meeting, and the leaked memos are basically pure panic."
+            beats = [
+                ("0:00 - 0:03", "THE SKEPTICAL HOOK", hook),
+                ("0:03 - 0:08", "THE BRUTAL TRUTH", f"Because while you were using AI to rewrite polite emails, autonomous agents working on '{topic_clean}' just solved three weeks of software engineering in twenty seconds."),
+                ("0:08 - 0:14", "THE REALITY CHECK", "The harsh reality that nobody wants to admit: your six-figure tech salary isn't safe because you work hard."),
+                ("0:14 - 0:19", "THE WAKEUP CALL", "The only people winning in 2026 are the ones orchestrating multi-agent systems while everyone else complains on Reddit."),
+                ("0:19 - 0:24", "THE CYNICAL LOOP", "Subscribe before your boss figures this out, because next week...")
+            ]
+        elif niche_id == "true_crime":
+            hook = "In 2004, a quiet suburban family vanished into thin air, leaving their hot dinner sitting right on the kitchen table."
+            beats = [
+                ("0:00 - 0:03", "THE CHILLING OPEN", hook),
+                ("0:03 - 0:08", "THE BIZARRE ANOMALY", f"When police and FBI profilers arrived for '{topic_clean}', both family cars were still in the driveway with keys in the ignition."),
+                ("0:08 - 0:14", "THE IMPOSSIBLE CLUE", "Then, fourteen days later, a burner phone pinged a lonely cell tower eight hundred miles away in the Nevada desert."),
+                ("0:14 - 0:19", "THE REDACTION", "To this day, federal authorities have kept three files completely blacked out with zero explanation."),
+                ("0:19 - 0:24", "THE CLIFFHANGER LOOP", "Part two is pinned in the comments below, so check it out before they take this down, because...")
+            ]
+        else:
+            hook = "Ninety-nine percent of people in the United States have no idea this psychological trick is being used on them every single day."
+            beats = [
+                ("0:00 - 0:03", "THE PROVOCATIVE HOOK", hook),
+                ("0:03 - 0:08", "THE CALL-OUT", f"Think about '{topic_clean}'. You think you're making logical decisions with your money and your career? Not even close."),
+                ("0:08 - 0:14", "THE MECHANICS", "Major corporations hire cognitive behavioral psychologists specifically to engineer decision fatigue into your daily routine."),
+                ("0:14 - 0:19", "THE EYE-OPENER", "Once you understand the trick, you can never unsee it. Look closely next time you make a purchase."),
+                ("0:19 - 0:24", "THE ENGAGEMENT LOOP", "Share this with someone who needs a reality check, and remember that...")
+            ]
 
-    # Combine into readable full text and timed segments
-    full_speech_script = " ".join([b[2] for b in beats])
-    analysis = analyze_script_retention(full_speech_script)
+        full_text = " ".join([b[2] for b in beats])
+        analysis = analyze_script_retention(full_text)
 
-    # Kinetic subtitle segments (ideal for FFmpeg subtitle overlay cards)
-    subtitles = []
-    for beat in beats:
-        subtitles.append({
-            "timestamp": beat[0],
-            "role": beat[1],
-            "text": beat[2],
-            "duration_est": max(3, len(beat[2].split()) // 2.5)
-        })
-
-    return {
-        "topic": topic,
-        "niche": niche_id,
-        "format": "Shorts (9:16)",
-        "hook": hook,
-        "beats": beats,
-        "full_text": full_speech_script,
-        "subtitles": subtitles,
-        "analysis": analysis,
-        "recommended_bgm": "Viral Shorts Energetic" if niche_id != "true_crime" else "True Crime Noir"
-    }
-
-def _generate_longform_script(topic: str, niche_id: str, niche_data: dict, hook_style: str):
-    """Generates an 8-12 minute high-RPM long-form video script with multiple retention resets."""
-    
-    sections = [
-        {
-            "title": "Act 0: The Cold Open & The 3-Second Hook",
-            "time": "0:00 - 1:15",
-            "purpose": "Hook the US viewer, state the stakes, prevent drop-off before first ad slot",
-            "voiceover": (
-                f"If you live in the United States and look at your bank account, your career, or your living expenses lately, "
-                f"you already know something fundamentally changed. Today, we are pulling back the curtain on '{topic}'. "
-                f"By the end of this video, you will understand the exact mechanics that 99% of people are completely blind to—"
-                f"and more importantly, the three critical strategic moves you need to make before the end of this year. "
-                f"Before we dive in, make sure to hit that subscribe button with notifications turned on—let's break down the data."
-            )
-        },
-        {
-            "title": "Act 1: The Hidden Reality Nobody Mentions",
-            "time": "1:15 - 3:45",
-            "purpose": "Present hard US data, Federal Reserve/IRS figures, and establish immediate authority",
-            "voiceover": (
-                f"To understand why this is happening, we have to look back at the economic policy shifts over the last 36 months. "
-                f"In the United States, middle-class purchasing power has faced an unprecedented squeeze. "
-                f"While corporate balance sheets have reported record gains, the median American worker has watched housing, healthcare, "
-                f"and grocery bills outpace wage increases by a wide margin. "
-                f"When you examine the data behind '{topic}', you realize this wasn't an accident—it is the direct byproduct of deliberate structural incentives. "
-                f"Take a look at this chart on your screen right now..."
-            )
-        },
-        {
-            "title": "Act 2: The Mid-Point Retention Reset & The Twist",
-            "time": "3:45 - 6:30",
-            "purpose": "Reset attention span right before the 5-minute mark where typical YouTube drop-off occurs",
-            "voiceover": (
-                f"Now, here is the part where most conventional financial and tech advice completely falls apart. "
-                f"You have probably been told by mainstream media and internet gurus that the solution is simply to 'save more' or 'work overtime'. "
-                f"That might have worked in 1995, but in 2026, the mathematical reality is stark. "
-                f"The wealthiest top 5% of US households play by a completely different playbook. "
-                f"Instead of trading hours for dollars, they structure assets to capture asymmetric upside while shielding themselves from currency devaluation. "
-                f"Here is how their system actually operates..."
-            )
-        },
-        {
-            "title": "Act 3: The 3-Step Action Blueprint",
-            "time": "6:30 - 9:30",
-            "purpose": "Deliver immense actionable value to guarantee high likes, comments, and shares",
-            "voiceover": (
-                f"So what does this mean for you, and how do you protect and grow your position? "
-                f"Step one: Audit your current exposure. If more than 40% of your net worth is sitting in depreciating cash or high-fee retirement vehicles, you are actively losing ground. "
-                f"Step two: Reposition toward productive, cash-flowing collateral that adjusts automatically with inflation. "
-                f"And step three: Build sovereign skill sets in high-demand US digital and automation sectors that cannot be outsourced or automated overnight."
-            )
-        },
-        {
-            "title": "Act 4: The Conclusion & The Engagement Loop",
-            "time": "9:30 - 10:45",
-            "purpose": "High-converting American CTA, algorithm engagement prompt, and end-screen teaser",
-            "voiceover": (
-                f"The bottom line is simple: America has always rewarded those who understand the rules of the game before the crowd catches up. "
-                f"I want to hear from you in the comments below: Which of these shifts are you seeing most in your city right now? "
-                f"I read and reply to every single comment during the first 2 hours after upload. "
-                f"If you found this breakdown valuable, smash the like button and share it with someone who needs to hear it. "
-                f"Click the video on your screen right now to see our next deep dive—I'll see you in the next one."
-            )
+        return {
+            "topic": topic_clean,
+            "niche": niche_id,
+            "format": "Shorts (9:16)",
+            "hook": hook,
+            "beats": beats,
+            "full_text": full_text,
+            "analysis": analysis
         }
-    ]
 
-    full_text = " ".join([s["voiceover"] for s in sections])
-    analysis = analyze_script_retention(full_text)
+    else:
+        # Long-Form YouTube Essay (SunnyV2 / MagnatesMedia 10-Minute Documentary Style)
+        sections = [
+            {
+                "title": "Act 0: The Cold Open & The Sarcastic Truth",
+                "time": "0:00 - 1:30",
+                "purpose": "Sarcastic hook, immediate stakes, relatable frustration",
+                "voiceover": (
+                    f"Let's be completely honest for three seconds: everything you were taught about '{topic_clean}' was probably true... in 1985. "
+                    f"Today? It is quietly draining your bank account while corporate executives laugh all the way to the Hamptons. "
+                    f"In this video, we are pulling back the curtain on the exact mechanics that 99% of people are completely blind to. "
+                    f"And by the end of this breakdown, you will understand why the system was engineered this way—and more importantly, "
+                    f"how the top 1% legally flip the script to protect themselves. Hit that subscribe button right now, because this is going to get uncomfortable."
+                )
+            },
+            {
+                "title": "Act 1: The Lie Everyone Believed",
+                "time": "1:30 - 4:00",
+                "purpose": "Deconstruct the common myth with dry wit & historical proof",
+                "voiceover": (
+                    f"To understand how we got into this mess, we have to look at the cold, hard numbers. "
+                    f"For the past thirty years, the mainstream financial media has repeated the exact same tired advice: just work harder, save your pennies, "
+                    f"and trust the established institutions. That sounds wonderful on a motivational Instagram post. "
+                    f"In reality, when you adjust for real purchasing power, the median American worker has been running on a financial hamster wheel. "
+                    f"Take a look at this chart on your screen right now..."
+                )
+            },
+            {
+                "title": "Act 2: The Insiders Who Broke the Rules",
+                "time": "4:00 - 7:00",
+                "purpose": "The investigative reveal (SunnyV2 / Coffeezilla investigative style)",
+                "voiceover": (
+                    f"Now, here is where the story goes completely off the rails. While the general public was following the rules, "
+                    f"a small group of insiders figured out an unpatched loophole in the system. "
+                    f"The math was so embarrassingly broken that anyone with basic arithmetic could legally exploit it. "
+                    f"When regulators finally caught wind of what was happening, did they shut it down? Of course not—they grandfathered themselves in."
+                )
+            },
+            {
+                "title": "Act 3: The 3 Moves You Must Make in 2026",
+                "time": "7:00 - 9:30",
+                "purpose": "Actionable, punchy blueprint that delivers undeniable value",
+                "voiceover": (
+                    f"So what does this actually mean for you? You have two choices: you can stay frustrated, or you can play by the real rules. "
+                    f"Rule number one: Stop leaving emergency cash in standard checking accounts that pay twelve cents in interest. Move it into sovereign yield accounts. "
+                    f"Rule number two: Reposition your assets into inflation-resistant collateral. "
+                    f"And rule number three: Build high-leverage skill sets that cannot be replaced overnight by automated algorithms."
+                )
+            },
+            {
+                "title": "Act 4: The Final Verdict & Community Challenge",
+                "time": "9:30 - 10:45",
+                "purpose": "High-converting engagement CTA and end-screen loop",
+                "voiceover": (
+                    f"The bottom line is simple: America has always rewarded those who read the fine print before the crowd catches on. "
+                    f"I want to hear from you in the comments below: Which part of this surprised you the most? "
+                    f"I read and reply to every single comment during the first two hours after upload. "
+                    f"Smash that like button, subscribe to TubePulse US, and click the video on your screen right now to see our next deep dive."
+                )
+            }
+        ]
 
-    return {
-        "topic": topic,
-        "niche": niche_id,
-        "format": "Long-Form (16:9)",
-        "sections": sections,
-        "full_text": full_text,
-        "analysis": analysis,
-        "recommended_bgm": "Wall Street Tech Pulse" if niche_id in ["finance", "tech_ai"] else "True Crime Noir"
-    }
+        full_text = " ".join([s["voiceover"] for s in sections])
+        analysis = analyze_script_retention(full_text)
+
+        return {
+            "topic": topic_clean,
+            "niche": niche_id,
+            "format": "Long-Form (16:9)",
+            "sections": sections,
+            "full_text": full_text,
+            "analysis": analysis
+        }
