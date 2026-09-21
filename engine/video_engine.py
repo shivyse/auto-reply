@@ -22,7 +22,18 @@ from .audio_engine import generate_viral_soundtrack_with_sfx, AUDIO_DIR
 VIDEO_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "media", "videos")
 os.makedirs(VIDEO_DIR, exist_ok=True)
 
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+BUNDLED_FONT = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "fonts", "DejaVuSans-Bold.ttf")
+FONT_PATH = BUNDLED_FONT if os.path.exists(BUNDLED_FONT) else "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+def get_ffmpeg_binary() -> str:
+    """Finds system ffmpeg or uses imageio-ffmpeg bundled binary for zero-install portability."""
+    if shutil.which("ffmpeg"):
+        return "ffmpeg"
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return "ffmpeg"
 
 # High-voltage viral color schemes
 VIRAL_THEMES = {
@@ -553,9 +564,11 @@ def render_automated_video(
         voiceover_file = os.path.join(AUDIO_DIR, "voiceover_casually_finance.mp3")
         has_voiceover = os.path.exists(voiceover_file) and (niche == "finance" or "casually" in clean_topic or "hack" in clean_topic)
 
+        ffmpeg_bin = get_ffmpeg_binary()
+
         if has_voiceover:
             try:
-                res = subprocess.run(["ffmpeg", "-i", voiceover_file], stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+                res = subprocess.run([ffmpeg_bin, "-i", voiceover_file], stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
                 m = re.search(r'Duration:\s*(\d+):(\d+):(\d+\.\d+)', res.stderr)
                 if m:
                     h, mn, s = m.groups()
@@ -626,7 +639,7 @@ def render_automated_video(
         if has_voiceover:
             # Multi-track mix: Spoken Human Voiceover + Ducked Background Beat
             cmd = [
-                "ffmpeg", "-y",
+                ffmpeg_bin, "-y",
                 "-f", "concat", "-safe", "0", "-i", concat_txt,
                 "-i", voiceover_file,
                 "-i", bgm_file,
@@ -646,7 +659,7 @@ def render_automated_video(
             ]
         else:
             cmd = [
-                "ffmpeg", "-y",
+                ffmpeg_bin, "-y",
                 "-f", "concat", "-safe", "0", "-i", concat_txt,
                 "-i", bgm_file,
                 "-c:v", "libx264",

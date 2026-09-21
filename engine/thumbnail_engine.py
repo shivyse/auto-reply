@@ -14,7 +14,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 THUMB_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "media", "thumbnails")
 os.makedirs(THUMB_DIR, exist_ok=True)
 
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+BUNDLED_FONT = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "fonts", "DejaVuSans-Bold.ttf")
+FONT_PATH = BUNDLED_FONT if os.path.exists(BUNDLED_FONT) else "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 THEME_COLORS = {
     "finance": {
